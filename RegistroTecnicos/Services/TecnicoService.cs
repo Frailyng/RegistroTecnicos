@@ -41,14 +41,14 @@ public class TecnicoService
     public async Task<bool> Existe(string? descripcion, int? tecnicoId = null)
     {
         return await _context.Tecnicos
-            .AnyAsync(p => p.Descripcion.Equals(descripcion));
+            .AnyAsync(p => p.Nombres.Equals(descripcion));
     }
 
     public async Task<bool> Existe(int tecnicoId, string? descripcion)
     {
         //TODO: Unir los dos existe en uno solo para reducir duplicidad de codigo.
         return await _context.Tecnicos
-        .AnyAsync(p => p.TecnicoId != tecnicoId && p.Descripcion.Equals(descripcion));
+        .AnyAsync(p => p.TecnicoId != tecnicoId && p.Nombres.Equals(descripcion));
 
 
     }
