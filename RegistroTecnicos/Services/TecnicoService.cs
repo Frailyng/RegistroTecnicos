@@ -21,7 +21,7 @@ public class TecnicoService
             return await Modificar(Tecnicos);
     }
 
-    public async Task<bool> Insertar(Tecnicos Tecnicos)
+    private async Task<bool> Insertar(Tecnicos Tecnicos)
     {
         _context.Tecnicos.Add(Tecnicos);
         return await _context.SaveChangesAsync() > 0;
