@@ -1,5 +1,56 @@
-﻿<h3>Index</h3>
+﻿@page "/TiposTecnicos/Index"
+@inject TiposTecnicosService TiposTecnicosService;
+@rendermode InteractiveServer
+
+<EditForm Model="ListaTiposTecnicos" class="border shadow-lg p-4 rounded bg-light">
+    <Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopRight" />
+
+    <div class="card-header bg-lightgreen text-dark text-center py-3 rounded">
+        <h3 class="mb-0 font-weight-bold">Tipos Técnicos</h3>
+    </div>
+
+    <table class="table table-bordered text-center shadow-sm rounded">
+        <thead class="bg-darkgreen text-white">
+            <tr>
+                <th>TipoTecnicoID</th>
+                <th>Descripcion</th>
+                <th>Activo</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tipo in ListaTiposTecnicos)
+            {
+                <tr>
+                    <td>@tipo.TipoTecnicoId</td>
+                    <td>@tipo.Descripcion</td>
+                    <td>@tipo.Activo</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</EditForm>
 
 @code {
 
+    public List<TiposTecnicos> ListaTiposTecnicos = new List<TiposTecnicos>();
+
+    List<ToastMessage> messages = new List<ToastMessage>();
+
+    protected override async Task OnInitializedAsync()
+    {
+            ListaTiposTecnicos = TiposTecnicosService.ObtenerTiposPredefinidos();
+       
+    }
+
+    private void ShowMessage(ToastType toastType) => messages.Add(CreateToastMessage(toastType));
+
+    private ToastMessage CreateToastMessage(ToastType toastType) => new ToastMessage
+        {
+            Type = toastType,
+            Title = "Blazor Bootstrap",
+            HelpText = $"{DateTime.Now}",
+            Message = $"Hello, World! This is a toast message. DateTime: {DateTime.Now}",
+        };
 }
+
+
