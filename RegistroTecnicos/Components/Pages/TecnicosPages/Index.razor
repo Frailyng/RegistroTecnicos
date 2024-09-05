@@ -52,7 +52,7 @@
             {
                 <tr>
                     <td>@Tecnico.TecnicoId</td>
-                    <td>@Tecnico.Nombres</td>
+                    <td>@Tecnico.Descripcion</td>
                     <td>@Tecnico.DiasCompromiso</td>
                     <td>
                         <a class="btn btn-outline-primary" href="/Tecnico/Details/@Tecnico.TecnicoId">
@@ -120,7 +120,7 @@
             }
             else if (filtro == "descripcion")
             {
-                ListaTecnicos = await TecnicoService.Listar(p => p.Nombres == valorFiltro);
+                ListaTecnicos = await TecnicoService.Listar(p => p.Descripcion == valorFiltro);
             }
             else if (filtro == "diascompromiso" && int.TryParse(valorFiltro, out int DiasCompromiso))
             {

@@ -26,8 +26,8 @@
             @* Descripcion *@
             <div class="mb-3">
                 <label for="Descripcion" class="form-label">Nombres:</label>
-                <InputText @bind-Value="Tecnico.Nombres" class="form-control" />
-                <ValidationMessage For="@(() => Tecnico.Nombres)" />
+                <InputText @bind-Value="Tecnico.Descripcion" class="form-control" />
+                <ValidationMessage For="@(() => Tecnico.Descripcion)" />
             </div>
 
             @* DiasCompromiso *@
@@ -80,7 +80,7 @@
 
     public async Task<bool> Validar()
     {
-        Existe = await TecnicoService.Existe(Tecnico.Nombres);
+        Existe = await TecnicoService.Existe(Tecnico.Descripcion);
         return !Existe;
     }
 

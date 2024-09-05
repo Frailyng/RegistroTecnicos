@@ -6,6 +6,6 @@ public class Tecnicos
     [Key]
     public int TecnicoId { get; set; }
     [Required(ErrorMessage = "El Campo Nombres es obligatorio")]
-    public string? Nombres {  get; set; }
+    public string? Descripcion {  get; set; }
     public int DiasCompromiso { get; set; }
 }

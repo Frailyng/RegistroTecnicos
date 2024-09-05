@@ -27,7 +27,7 @@ public class TecnicoService
         return await _context.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> Modificar(Tecnicos Tecnicos)
+    private async Task<bool> Modificar(Tecnicos Tecnicos)
     {
         _context.Update(Tecnicos);
         return await _context.SaveChangesAsync() > 0;
@@ -41,14 +41,14 @@ public class TecnicoService
     public async Task<bool> Existe(string? descripcion, int? tecnicoId = null)
     {
         return await _context.Tecnicos
-            .AnyAsync(p => p.Nombres.Equals(descripcion));
+            .AnyAsync(p => p.Descripcion.Equals(descripcion));
     }
 
     public async Task<bool> Existe(int tecnicoId, string? descripcion)
     {
         //TODO: Unir los dos existe en uno solo para reducir duplicidad de codigo.
         return await _context.Tecnicos
-        .AnyAsync(p => p.TecnicoId != tecnicoId && p.Nombres.Equals(descripcion));
+        .AnyAsync(p => p.TecnicoId != tecnicoId && p.Descripcion.Equals(descripcion));
 
 
     }
