@@ -16,8 +16,7 @@
                 <select @bind="filtro" class="form-select">
                     <option value="id">TecnicoId</option>
                     <option value="Nombres">Nombres</option>
-                    <option value="SueldoHora">Sueldo Hora</option>
-                </select>
+                   </select>
             </div>
             <div class="col-md-6">
                 <label for="ValorFiltro" class="form-label">Búsqueda:</label>
@@ -121,10 +120,6 @@
             else if (filtro == "Nombres")
             {
                 ListaTecnicos = await TecnicoService.Listar(p => p.Nombres == valorFiltro);
-            }
-            else if (filtro == "SueldoHora" && int.TryParse(valorFiltro, out int SueldoHora))
-            {
-                ListaTecnicos = await TecnicoService.Listar(p => p.SueldoHora == SueldoHora);
             }
         }
         else
