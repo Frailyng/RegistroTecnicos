@@ -25,15 +25,15 @@
             </div>
 
             <div class="mb-3">
-                <label for="Descripcion" class="form-label">Nombres:</label>
-                <InputText @bind-Value="Tecnico.Descripcion" class="form-control" />
-                <ValidationMessage For="@(() => Tecnico.Descripcion)" />
+                <label for="Nombres" class="form-label">Nombres:</label>
+                <InputText @bind-Value="Tecnico.Nombres" class="form-control" />
+                <ValidationMessage For="@(() => Tecnico.Nombres)" />
             </div>
 
             <div class="mb-3">
-                <label for="DiasCompromiso" class="form-label">Sueldo Por Hora:</label>
-                <InputNumber @bind-Value="Tecnico.DiasCompromiso" class="form-control" />
-                <ValidationMessage For="@(() => Tecnico.DiasCompromiso)" />
+                <label for="SueldoHora" class="form-label">Sueldo Por Hora:</label>
+                <InputNumber @bind-Value="Tecnico.SueldoHora" class="form-control" />
+                <ValidationMessage For="@(() => Tecnico.SueldoHora)" />
             </div>
 
         </div>
@@ -92,7 +92,7 @@
     public async Task<bool> Validar()
     {
         //TODO: Cambiar por Any y llevarlo al servicio.
-        Existe = await TecnicoService.Existe(Tecnico.TecnicoId, Tecnico.Descripcion);
+        Existe = await TecnicoService.Existe(Tecnico.TecnicoId, Tecnico.Nombres);
         return !Existe;
     }
 

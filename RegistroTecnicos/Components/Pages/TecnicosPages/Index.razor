@@ -15,8 +15,8 @@
                 <label for="Filtro" class="form-label">Filtrar por:</label>
                 <select @bind="filtro" class="form-select">
                     <option value="id">TecnicoId</option>
-                    <option value="descripcion">Nombres</option>
-                    <option value="diascompromiso">Sueldo Hora</option>
+                    <option value="Nombres">Nombres</option>
+                    <option value="SueldoHora">Sueldo Hora</option>
                 </select>
             </div>
             <div class="col-md-6">
@@ -52,8 +52,8 @@
             {
                 <tr>
                     <td>@Tecnico.TecnicoId</td>
-                    <td>@Tecnico.Descripcion</td>
-                    <td>@Tecnico.DiasCompromiso</td>
+                    <td>@Tecnico.Nombres</td>
+                    <td>@Tecnico.SueldoHora</td>
                     <td>
                         <a class="btn btn-outline-primary" href="/Tecnico/Details/@Tecnico.TecnicoId">
                             <span class="bi bi-info-circle-fill"></span>
@@ -118,13 +118,13 @@
             {
                 ListaTecnicos = await TecnicoService.Listar(p => p.TecnicoId == TecnicoId);
             }
-            else if (filtro == "descripcion")
+            else if (filtro == "Nombres")
             {
-                ListaTecnicos = await TecnicoService.Listar(p => p.Descripcion == valorFiltro);
+                ListaTecnicos = await TecnicoService.Listar(p => p.Nombres == valorFiltro);
             }
-            else if (filtro == "diascompromiso" && int.TryParse(valorFiltro, out int DiasCompromiso))
+            else if (filtro == "SueldoHora" && int.TryParse(valorFiltro, out int SueldoHora))
             {
-                ListaTecnicos = await TecnicoService.Listar(p => p.DiasCompromiso == DiasCompromiso);
+                ListaTecnicos = await TecnicoService.Listar(p => p.SueldoHora == SueldoHora);
             }
         }
         else
