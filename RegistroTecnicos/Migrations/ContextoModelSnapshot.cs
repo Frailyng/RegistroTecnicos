@@ -17,22 +17,45 @@ namespace RegistroTecnicos.Migrations
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
 
             modelBuilder.Entity("RegistroTecnicos.Models.Tecnicos", b =>
-                {
-                    b.Property<int>("tecnicoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+            {
+                b.Property<int>("TecnicoId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("INTEGER");
 
-                    b.Property<string>("Nombres")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                b.Property<string>("Nombres")
+                    .IsRequired()
+                    .HasColumnType("TEXT");
 
-                    b.Property<int>("SueldoHora")
-                        .HasColumnType("INTEGER");
+                b.Property<string>("Descripcion")
+                .IsRequired()
+                .HasColumnType("TEXT");
 
-                    b.HasKey("tecnicoId");
+                b.Property<int>("SueldoHora")
+                    .HasColumnType("INTEGER");
 
-                    b.ToTable("Tecnicos");
-                });
+                b.HasKey("TecnicoId");
+
+
+                b.ToTable("Tecnicos");
+            });
+
+            modelBuilder.Entity("RegistroTecnicos.Models.TiposTecnicos", b =>
+            {
+                b.Property<int>("TipoTecnicoId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("INTEGER");
+
+                b.Property<string>("Descripcion")
+                    .IsRequired()
+                    .HasColumnType("TEXT");
+
+                b.Property<bool>("Activo")
+                    .HasColumnType("bit");
+
+                b.HasKey("TipoTecnicoId");
+
+                b.ToTable("TiposTecnicos");
+            });
 #pragma warning restore 612, 618
         }
     }
