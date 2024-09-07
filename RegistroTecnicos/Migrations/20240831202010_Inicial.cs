@@ -14,16 +14,17 @@ namespace RegistroTecnicos.Migrations
                 name: "Tecnicos",
                 columns: table => new
                 {
-                    tecnicoId = table.Column<int>(type: "INTEGER", nullable: false)
+                    TecnicoId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Nombres = table.Column<string>(type: "TEXT", nullable: false),
-                    SueldoHora = table.Column<int>(type: "INTEGER", nullable: false)
+                    Descripcion = table.Column<string>(type: "TEXT", nullable: false),
+                    SueldoHora = table.Column<int>(type: "INTEGER", nullable: false),
+
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tecnicos", x => x.tecnicoId);
+                    table.PrimaryKey("PK_Tecnicos", x => x.TecnicoId);
                 });
-
             migrationBuilder.CreateTable(
                 name: "TiposTecnicos",
                 columns: table => new
@@ -47,7 +48,7 @@ namespace RegistroTecnicos.Migrations
                 name: "Tecnicos");
 
             migrationBuilder.DropTable(
-                name: "TiposTecnicos");
+                name: "TiposTecnicos"); // Nombre ajustado
         }
     }
 }

@@ -1,13 +1,12 @@
 ﻿@page "/Tecnico/create"
 @inject TecnicoService TecnicoService
 @inject NavigationManager NavigationManager
-@rendermode InteractiveServer
 
 <EditForm Model="Tecnico" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
     <div class="card shadow-lg border-0 rounded" style="background-color: #f8f9fa;">
         <div class="card-header bg-primary text-white" style="text-align: center;">
-            <h3> <i class="fas fa-clipboard-list"></i> Registro de Tecnicos</h3>
+            <h3> <i class="fas fa-clipboard-list"></i> Registro de Técnicos</h3>
         </div>
 
         <div class="card-body">
@@ -23,20 +22,32 @@
                 </div>
             </div>
 
-            @* Descripcion *@
+            @* Nombres *@
             <div class="mb-3">
                 <label for="Nombres" class="form-label">Nombres:</label>
                 <InputText @bind-Value="Tecnico.Nombres" class="form-control" />
                 <ValidationMessage For="@(() => Tecnico.Nombres)" />
             </div>
-
-            @* DiasCompromiso *@
+            @* Descripcion *@
             <div class="mb-3">
-                <label for="Nombres" class="form-label">Sueldo por hora:</label>
+                <label for="Descripcion" class="form-label">Descripción:</label>
+                <InputSelect @bind-Value="Tecnico.Descripcion" class="form-control">
+                    <option value="">Seleccione una opción</option>
+                    <option value="Redes">Redes</option>
+                    <option value="Reparacion">Reparación</option>
+                    <option value="Impresoras">Impresoras</option>
+                    <option value="Soporte">Soporte</option>
+                    <option value="Celulares">Celulares</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => Tecnico.Descripcion)" />
+            </div>
+
+            @* Sueldo por Hora *@
+            <div class="mb-3">
+                <label for="SueldoHora" class="form-label">Sueldo por hora:</label>
                 <InputNumber @bind-Value="Tecnico.SueldoHora" class="form-control" />
                 <ValidationMessage For="@(() => Tecnico.SueldoHora)" />
             </div>
-
         </div>
 
         <div class="card-footer bg-light d-flex justify-content-center mt-3">
@@ -49,10 +60,9 @@
     </div>
 </EditForm>
 
-
 @code {
-        [Parameter]
-        public int TecnicoId { get; set; }
+    [Parameter]
+    public int TecnicoId { get; set; }
 
     public Tecnicos Tecnico { get; set; } = new Tecnicos();
     private bool Existe = false;
@@ -102,5 +112,6 @@
     {
         var eliminado = await TecnicoService.Eliminar(Tecnico.TecnicoId);
         Nuevo();
+
     }
-    }
+}
