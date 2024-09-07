@@ -32,6 +32,7 @@ public class TecnicoService
         _context.Update(Tecnicos);
         return await _context.SaveChangesAsync() > 0;
     }
+
     public async Task<bool> Existe(int TecnicoId)
     {
         return await _context.Tecnicos
@@ -46,11 +47,8 @@ public class TecnicoService
 
     public async Task<bool> Existe(int tecnicoId, string? Nombres)
     {
-        //TODO: Unir los dos existe en uno solo para reducir duplicidad de codigo.
         return await _context.Tecnicos
-        .AnyAsync(p => p.TecnicoId != tecnicoId && p.Nombres.Equals(Nombres));
-
-
+            .AnyAsync(p => p.TecnicoId != tecnicoId && p.Nombres.Equals(Nombres));
     }
 
     public async Task<bool> Eliminar(int id)
@@ -59,7 +57,6 @@ public class TecnicoService
             .Where(p => p.TecnicoId == id)
             .ExecuteDeleteAsync();
         return tecnicos > 0;
-
     }
 
     public async Task<Tecnicos?> Buscar(int id)
@@ -67,9 +64,9 @@ public class TecnicoService
         return await _context.Tecnicos
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.TecnicoId == id);
-
     }
 
+    // Aquí va el método Listar modificado
     public async Task<List<Tecnicos>> Listar(Expression<Func<Tecnicos, bool>> criterio)
     {
         return await _context.Tecnicos
