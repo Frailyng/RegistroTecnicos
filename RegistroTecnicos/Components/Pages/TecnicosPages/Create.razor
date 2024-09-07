@@ -1,5 +1,6 @@
 ﻿@page "/Tecnico/create"
 @inject TecnicoService TecnicoService
+@inject TiposTecnicosService TiposTecnicosService
 @inject NavigationManager NavigationManager
 
 <EditForm Model="Tecnico" OnValidSubmit="Guardar">
@@ -28,16 +29,16 @@
                 <InputText @bind-Value="Tecnico.Nombres" class="form-control" />
                 <ValidationMessage For="@(() => Tecnico.Nombres)" />
             </div>
-            @* Descripcion *@
+
+            @* Descripcion (Cargar desde TiposTecnicos) *@
             <div class="mb-3">
                 <label for="Descripcion" class="form-label">Descripción:</label>
                 <InputSelect @bind-Value="Tecnico.Descripcion" class="form-control">
                     <option value="">Seleccione una opción</option>
-                    <option value="Redes">Redes</option>
-                    <option value="Reparacion">Reparación</option>
-                    <option value="Impresoras">Impresoras</option>
-                    <option value="Soporte">Soporte</option>
-                    <option value="Celulares">Celulares</option>
+                    @foreach (var tipo in ListaTiposTecnicos)
+                    {
+                        <option value="@tipo.Descripcion">@tipo.Descripcion</option>
+                    }
                 </InputSelect>
                 <ValidationMessage For="@(() => Tecnico.Descripcion)" />
             </div>
@@ -65,7 +66,14 @@
     public int TecnicoId { get; set; }
 
     public Tecnicos Tecnico { get; set; } = new Tecnicos();
+    public List<TiposTecnicos> ListaTiposTecnicos { get; set; } = new List<TiposTecnicos>();
     private bool Existe = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar la lista de TiposTecnicos para el campo Descripción
+        ListaTiposTecnicos = await TiposTecnicosService.Listar(c => true);
+    }
 
     public void Nuevo()
     {
@@ -112,6 +120,6 @@
     {
         var eliminado = await TecnicoService.Eliminar(Tecnico.TecnicoId);
         Nuevo();
-
     }
 }
+
