@@ -78,22 +78,22 @@ public class TiposTecnicosService
 
     public async Task<bool> Existe(string? Descripcion, int? tipotecnicoId = null)
     {
-        return await _context.Tecnicos
-            .AnyAsync(p => p.Nombres.Equals(Descripcion));
+        return await _context.TiposTecnicos
+            .AnyAsync(p => p.Descripcion.Equals(Descripcion));
     }
 
     public async Task<bool> Existe(int tipotecnicoId, string? Descripcion)
     {
-        return await _context.Tecnicos
-            .AnyAsync(p => p.TecnicoId != tipotecnicoId && p.Descripcion.Equals(Descripcion));
+        return await _context.TiposTecnicos
+            .AnyAsync(p => p.TipoTecnicoId != tipotecnicoId && p.Descripcion.Equals(Descripcion));
     }
 
     public async Task<bool> Eliminar(int id)
     {
-        var tecnicos = await _context.TiposTecnicos
+        var tipostecnicos = await _context.TiposTecnicos
             .Where(p => p.TipoTecnicoId == id)
             .ExecuteDeleteAsync();
-        return tecnicos > 0;
+        return tipostecnicos > 0;
     }
 
     public async Task<TiposTecnicos?> Buscar(int id)
