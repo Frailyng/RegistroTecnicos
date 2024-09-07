@@ -43,10 +43,23 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ListaTiposTecnicos = TiposTecnicosService.ObtenerTiposPredefinidos();
-        ListaTiposTecnicos = await TiposTecnicosService.Listar(c => true);
+        // Obtener los tipos predefinidos
+        var tiposPredefinidos = TiposTecnicosService.ObtenerTiposPredefinidos();
 
+        // Verificar si ya están en la base de datos
+        foreach (var tipo in tiposPredefinidos)
+        {
+            // Si no existe, se guarda en la base de datos
+            if (!await TiposTecnicosService.Existe(tipo.TipoTecnicoId))
+            {
+                await TiposTecnicosService.Guardar(tipo);
+            }
+        }
+
+        // Listar todos los tipos, incluyendo los predefinidos y los nuevos
+        ListaTiposTecnicos = await TiposTecnicosService.Listar(c => true);
     }
+
 }
 
 
