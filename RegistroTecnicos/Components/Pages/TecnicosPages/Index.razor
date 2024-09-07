@@ -1,6 +1,5 @@
 ﻿@page "/Tecnico/Index"
-
-@inject TecnicoService TecnicoService;
+@inject TecnicoService TecnicoService
 @rendermode InteractiveServer
 
 <EditForm Model="ListaTecnicos" class="border shadow-lg p-4 rounded bg-light">
@@ -14,9 +13,10 @@
             <div class="col-md-3">
                 <label for="Filtro" class="form-label">Filtrar por:</label>
                 <select @bind="filtro" class="form-select">
-                    <option value="id">TecnicoId</option>
+                    <option value="Id">TecnicoId</option>
                     <option value="Nombres">Nombres</option>
-                   </select>
+                    <option value="Descripcion">Descripcion</option>
+                </select>
             </div>
             <div class="col-md-6">
                 <label for="ValorFiltro" class="form-label">Búsqueda:</label>
@@ -40,6 +40,7 @@
             <tr>
                 <th>TecnicoID</th>
                 <th>Nombres</th>
+                <th>Descripcion</th>
                 <th>Sueldo por Hora</th>
                 <th>Ver</th>
                 <th>Editar</th>
@@ -52,19 +53,18 @@
                 <tr>
                     <td>@Tecnico.TecnicoId</td>
                     <td>@Tecnico.Nombres</td>
+                    <td>@Tecnico.Descripcion</td> <!-- Mostrar la descripción del tipo de técnico -->
                     <td>@Tecnico.SueldoHora</td>
                     <td>
                         <a class="btn btn-outline-primary" href="/Tecnico/Details/@Tecnico.TecnicoId">
                             <span class="bi bi-info-circle-fill"></span>
                         </a>
                     </td>
-
                     <td>
                         <a class="btn btn-outline-success" href="/Tecnico/Edit/@Tecnico.TecnicoId">
                             <span class="bi bi-pencil-fill"></span>
                         </a>
                     </td>
-
                     <td>
                         <a class="btn btn-outline-danger" href="/Tecnico/Delete/@Tecnico.TecnicoId">
                             <span class="bi bi-trash-fill"></span>
@@ -76,15 +76,9 @@
     </table>
 </EditForm>
 
-
-
-
 @code {
-
     public Tecnicos Tecnicos = new Tecnicos();
-
     public List<Tecnicos> ListaTecnicos = new List<Tecnicos>();
-
     List<ToastMessage> messages = new List<ToastMessage>();
 
     private string filtro = "Id";
@@ -99,6 +93,7 @@
             HelpText = $"{DateTime.Now}",
             Message = $"Hello, World! This is a toast message. DateTime: {DateTime.Now}",
         };
+
     protected override async Task OnInitializedAsync()
     {
         ListaTecnicos = await TecnicoService.Listar(c => true);
@@ -113,13 +108,17 @@
     {
         if (valorFiltro.Trim() != "")
         {
-            if (filtro == "id" && int.TryParse(valorFiltro, out int TecnicoId))
+            if (filtro == "Id" && int.TryParse(valorFiltro, out int tecnicoId))
             {
-                ListaTecnicos = await TecnicoService.Listar(p => p.TecnicoId == TecnicoId);
+                ListaTecnicos = await TecnicoService.Listar(p => p.TecnicoId == tecnicoId);
             }
             else if (filtro == "Nombres")
             {
                 ListaTecnicos = await TecnicoService.Listar(p => p.Nombres == valorFiltro);
+            }
+            else if (filtro == "Descripcion")
+            {
+                ListaTecnicos = await TecnicoService.Listar(p => p.Descripcion == valorFiltro);
             }
         }
         else
