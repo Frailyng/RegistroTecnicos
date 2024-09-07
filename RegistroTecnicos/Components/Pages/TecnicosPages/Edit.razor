@@ -1,5 +1,6 @@
 ﻿@page "/Tecnico/Edit/{TecnicoId:int}"
 @inject TecnicoService TecnicoService
+@inject TiposTecnicosService TiposTecnicosService
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
@@ -24,9 +25,16 @@
                 <ValidationMessage For="@(() => Tecnico.Nombres)" />
             </div>
 
+            @* Descripcion *@
             <div class="mb-3">
-                <label for="Descripcion" class="form-label">Descripcion:</label>
-                <InputText @bind-Value="Tecnico.Descripcion" class="form-control" />
+                <label for="Descripcion" class="form-label">Descripción:</label>
+                <InputSelect @bind-Value="Tecnico.Descripcion" class="form-control">
+                    <option value="">Seleccione una opción</option>
+                    @foreach (var tipo in ListaTiposTecnicos)
+                    {
+                        <option value="@tipo.Descripcion">@tipo.Descripcion</option>
+                    }
+                </InputSelect>
                 <ValidationMessage For="@(() => Tecnico.Descripcion)" />
             </div>
 
@@ -52,17 +60,20 @@
     public int? TecnicoId { get; set; }
 
     public Tecnicos Tecnico { get; set; } = new Tecnicos();
+    public List<TiposTecnicos> ListaTiposTecnicos { get; set; } = new List<TiposTecnicos>();
     private bool Existe { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
+        // Cargar la lista de TiposTecnicos para el campo Descripción
+        ListaTiposTecnicos = await TiposTecnicosService.Listar(c => true);
+
         if (TecnicoId.HasValue)
         {
             Tecnico.TecnicoId = TecnicoId.Value;
             await Buscar();
         }
     }
-
 
     public void Nuevo()
     {
@@ -82,7 +93,6 @@
 
     public async Task<bool> Validar()
     {
-
         Existe = await TecnicoService.Existe(Tecnico.TecnicoId, Tecnico.Nombres);
         return !Existe;
     }
@@ -108,4 +118,5 @@
         Nuevo();
     }
 }
+
 
