@@ -1,5 +1,116 @@
-﻿<h3>Edit</h3>
+﻿@page "/TipoTecnico/Edit/{TipoTecnicoId:int}"
+@inject TiposTecnicosService TiposTecnicosService
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<EditForm Model="TipoTecnico" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="card shadow-lg border-0 rounded" style="background-color: #f8f9fa;">
+        <div class="card-header bg-primary text-white" style="text-align: center;">
+            <h3><i class="fas fa-clipboard-list"></i> Editar Tipo Técnico</h3>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="TipoTecnicoId" class="form-label">TipoTecnicoId:</label>
+                    <InputNumber @bind-Value="TipoTecnico.TipoTecnicoId" class="form-control" style="font-size: 0.8em;" readonly />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="Descripcion" class="form-label">Descripcion:</label>
+                <InputText @bind-Value="TipoTecnico.Descripcion" class="form-control" />
+                <ValidationMessage For="@(() => TipoTecnico.Descripcion)" />
+            </div>
+
+            <div class="mb-3">
+                <label for="Activo" class="form-label">Activo:</label>
+                <InputSelect @bind-Value="TipoTecnico.Activo" class="form-control">
+                    <option value="true">True</option>
+                    <option value="false">False</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => TipoTecnico.Activo)" />
+            </div>
+
+        </div>
+
+        <div class="card-footer bg-light d-flex justify-content-center mt-3">
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-primary ml-2" @onclick="Nuevo"><span class="bi bi-plus"></span> Nuevo </button>
+                <button type="submit" class="btn btn-outline-success ml-2"><span class="bi bi-check-circle-fill"></span> Guardar </button>
+                <a type="button" href="/TiposTecnicos/Index/" class="btn btn-outline-danger"><span class="bi bi-arrow-bar-left"></span> Retroceder </a>
+            </div>
+        </div>
+    </div>
+</EditForm>
 
 @code {
+    [Parameter]
+    public int TipoTecnicoId { get; set; }
 
+    public TiposTecnicos TipoTecnico { get; set; } = new TiposTecnicos();
+    private bool Existe { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (TipoTecnicoId != 0)
+        {
+            await Buscar();
+        }
+        else
+        {
+            Nuevo();
+        }
+    }
+
+    public void Nuevo()
+    {
+        TipoTecnico = new TiposTecnicos();
+        Existe = false;
+    }
+
+    public async Task Buscar()
+    {
+        Console.WriteLine("Buscando TipoTecnico con ID: " + TipoTecnicoId);
+        var TipoTecnicoEncontrado = await TiposTecnicosService.Buscar(TipoTecnicoId);
+        if (TipoTecnicoEncontrado != null)
+        {
+            Console.WriteLine("Datos encontrados para TipoTecnicoId: " + TipoTecnicoId);
+            TipoTecnico = TipoTecnicoEncontrado;
+        }
+        else
+        {
+            Console.WriteLine("No se encontraron datos para TipoTecnicoId: " + TipoTecnicoId);
+            Nuevo();
+        }
+    }
+
+    public async Task<bool> Validar()
+    {
+        Existe = await TiposTecnicosService.Existe(TipoTecnico.TipoTecnicoId, TipoTecnico.Descripcion);
+        return !Existe;
+    }
+
+    public async Task Guardar()
+    {
+        if (!await Validar())
+        {
+            // Mostrar mensaje de error si la validación falla
+            return;
+        }
+
+        var guardo = await TiposTecnicosService.Guardar(TipoTecnico);
+        if (guardo)
+        {
+            Nuevo();
+        }
+    }
+
+    public async Task Eliminar()
+    {
+        var eliminado = await TiposTecnicosService.Eliminar(TipoTecnico.TipoTecnicoId);
+        Nuevo();
+    }
 }
+

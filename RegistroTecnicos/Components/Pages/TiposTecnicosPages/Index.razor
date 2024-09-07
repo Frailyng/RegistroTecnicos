@@ -22,8 +22,8 @@
                 <th>Descripcion</th>
                 <th>Activo</th>
                 <th>Ver</th>
+                <th>Editar</th>
                 <th>Eliminar</th>
-
             </tr>
         </thead>
         <tbody>
@@ -38,14 +38,18 @@
                         <a class="btn btn-outline-primary" href="/TipoTecnico/Details/@tipo.TipoTecnicoId">
                             <span class="bi bi-info-circle-fill"></span>
                         </a>
+                    </td>
 
+                    <td>
+                        <a class="btn btn-outline-success" href="/TipoTecnico/Edit/@tipo.TipoTecnicoId">
+                            <span class="bi bi-pencil-fill"></span>
+                        </a>
                     </td>
 
                     <td>
                         <a class="btn btn-outline-danger" href="/TipoTecnico/Delete/@tipo.TipoTecnicoId">
                             <span class="bi bi-trash-fill"></span>
                         </a>
-
                     </td>
                 </tr>
             }
@@ -55,7 +59,6 @@
 </EditForm>
 
 @code {
-    public TiposTecnicos TipoTecnico = new TiposTecnicos();
     public List<TiposTecnicos> ListaTiposTecnicos { get; set; } = new List<TiposTecnicos>();
     List<ToastMessage> messages = new List<ToastMessage>();
 
@@ -76,8 +79,7 @@
         // Listar todos los tipos, incluyendo los predefinidos y los nuevos
         ListaTiposTecnicos = await TiposTecnicosService.Listar(c => true);
     }
-
-
 }
+
 
 
