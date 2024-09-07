@@ -9,6 +9,12 @@
         <h3 class="mb-0 font-weight-bold">Tipos Técnicos</h3>
     </div>
 
+    <div class="col-md-3 text-end">
+        <a href="/TipoTecnico/Create" class="btn btn-success">
+            <span class="bi bi-plus-circle"></span> Crear
+        </a>
+    </div>
+
     <table class="table table-bordered text-center shadow-sm rounded">
         <thead class="bg-darkgreen text-white">
             <tr>
@@ -28,29 +34,19 @@
             }
         </tbody>
     </table>
+
 </EditForm>
 
 @code {
-
-    public List<TiposTecnicos> ListaTiposTecnicos = new List<TiposTecnicos>();
-
+    public List<TiposTecnicos> ListaTiposTecnicos { get; set; } = new List<TiposTecnicos>();
     List<ToastMessage> messages = new List<ToastMessage>();
 
     protected override async Task OnInitializedAsync()
     {
-            ListaTiposTecnicos = TiposTecnicosService.ObtenerTiposPredefinidos();
-       
+        ListaTiposTecnicos = TiposTecnicosService.ObtenerTiposPredefinidos();
+        ListaTiposTecnicos = await TiposTecnicosService.Listar(c => true);
+
     }
-
-    private void ShowMessage(ToastType toastType) => messages.Add(CreateToastMessage(toastType));
-
-    private ToastMessage CreateToastMessage(ToastType toastType) => new ToastMessage
-        {
-            Type = toastType,
-            Title = "Blazor Bootstrap",
-            HelpText = $"{DateTime.Now}",
-            Message = $"Hello, World! This is a toast message. DateTime: {DateTime.Now}",
-        };
 }
 
 
