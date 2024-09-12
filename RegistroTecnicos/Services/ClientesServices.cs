@@ -21,5 +21,9 @@ public class ClientesServices
             return await Modificar(Clientes);
     }
 
-    private 
+    private async Task<bool> Insertar(Clientes Clientes)
+    {
+        _context.Clientes.Add(Clientes);
+        return await _context.SaveChangesAsync() > 0;
+    }
 }
