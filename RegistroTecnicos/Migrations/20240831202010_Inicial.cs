@@ -39,6 +39,22 @@ namespace RegistroTecnicos.Migrations
                 {
                     table.PrimaryKey("PK_TiposTecnicos", x => x.TipotecnicoId);
                 });
+            migrationBuilder.CreateTable(
+                name: "Clientes",
+                columns: table => new
+                {
+                    ClienteId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Nombres = table.Column<string>(type: "TEXT", nullable: false),
+                    WhatsApp = table.Column<string>(type: "TEXT", nullable: false),
+
+
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clientes", x => x.ClienteId);
+                });
+
         }
 
         /// <inheritdoc />
@@ -49,6 +65,9 @@ namespace RegistroTecnicos.Migrations
 
             migrationBuilder.DropTable(
                 name: "TiposTecnicos"); // Nombre ajustado
+
+            migrationBuilder.DropTable(
+                name: "Clientes");
         }
     }
 }
