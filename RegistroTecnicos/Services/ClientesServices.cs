@@ -26,4 +26,52 @@ public class ClientesServices
         _context.Clientes.Add(Clientes);
         return await _context.SaveChangesAsync() > 0;
     }
+
+    private async Task <bool> Modificar(Clientes Clientes)
+    {
+        _context.Update(Clientes);
+        return await _context.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> Existe (int ClienteId)
+    {
+        return await _context.Clientes
+            .AnyAsync(p => p.ClienteId == ClienteId);
+    }
+
+    public async Task<bool> Existe(string? Nombres, int? ClienteId = null)
+    {
+        return await _context.Clientes
+            .AnyAsync(p => p.Nombres.Equals(Nombres));
+    }
+
+    public async Task<bool> Existe(int ClienteId, string? Nombres)
+    {
+        return await _context.Clientes
+            .AnyAsync(p => p.ClienteId != ClienteId && p.Nombres.Equals(Nombres));
+    }
+
+    public async Task<bool> Eliminar(int id)
+    {
+        var Clientes = await _context.Clientes
+            .Where(p => p.ClienteId == id)
+            .ExecuteDeleteAsync();
+        return Clientes > 0;
+    }
+
+    public async Task<Clientes?> Buscar(int id)
+    {
+        return await _context.Clientes
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.ClienteId == id);
+
+    }
+    public async Task<List<Clientes>> Listar(Expression<Func<Clientes, bool>> criterio)
+    {
+        return await _context.Clientes
+            .AsNoTracking()
+            .Where(criterio)
+            .ToListAsync();
+    }
+
 }
