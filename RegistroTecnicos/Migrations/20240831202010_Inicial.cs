@@ -54,6 +54,23 @@ namespace RegistroTecnicos.Migrations
                 {
                     table.PrimaryKey("PK_Clientes", x => x.ClienteId);
                 });
+            migrationBuilder.CreateTable(
+               name: "Trabajos",
+               columns: table => new
+               {
+                   TrabajoId = table.Column<int>(type: "INTEGER", nullable: false)
+                       .Annotation("Sqlite:Autoincrement", true),
+                   Fecha = table.Column<DateTime>(type: "DATE", nullable: false),
+                   ClienteId = table.Column<int>(type: "INTEGER", nullable: false),
+                   TecnicoId = table.Column<int>(type: "INTEGER", nullable: false),
+                   Descripcion = table.Column<string>(type: "TEXT", nullable: false),
+                   Monto = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+
+               },
+               constraints: table =>
+               {
+                   table.PrimaryKey("PK_Trabajos", x => x.TrabajoId);
+               });
 
         }
 
@@ -64,10 +81,13 @@ namespace RegistroTecnicos.Migrations
                 name: "Tecnicos");
 
             migrationBuilder.DropTable(
-                name: "TiposTecnicos"); // Nombre ajustado
+                name: "TiposTecnicos");
 
             migrationBuilder.DropTable(
                 name: "Clientes");
+
+            migrationBuilder.DropTable(
+               name: "Trabajos");
         }
     }
 }
