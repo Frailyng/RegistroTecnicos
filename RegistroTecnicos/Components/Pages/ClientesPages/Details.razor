@@ -1,5 +1,61 @@
-﻿<h3>Details</h3>
+﻿@page "/Clientes/Details"
+@page "/Clientes/Details/{ClienteId:int}"
+@inject ClientesServices ClientesServices
+@inject NavigationManager navigationManager
+
+<PageTitle>Detalles de los Clientes</PageTitle>
+
+@if (Clientes != null)
+{
+    <div class="container">
+        <div class="card shadow-header">
+            <div class="card-header bg-primary text-white text-center py-2 rounded">
+                <h3 class="text-center"><strong>Detalles de los Clientes</strong></h3>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><strong>ClienteId:</strong> @Clientes.ClienteId</li>
+                                <li><strong>Nombres:</strong> @Clientes.Nombres</li>
+                                <li><strong>Descripcion:</strong> @Clientes.WhatsApp</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <button type="button" class="btn btn-outline-primary" @onclick="Volver">
+                    <i class="bi bi-box-arrow-left"></i> Volver
+                </button>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>Cliente no encontrado.</p>
+}
+
+
 
 @code {
+    [Parameter]
+    public int ClienteId { get; set; }
+
+    public Clientes? Clientes { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ClienteId != 0)
+        {
+            Clientes = await ClientesServices.Buscar(ClienteId);
+        }
+    }
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/Clientes/Index");
+    }
 
 }
