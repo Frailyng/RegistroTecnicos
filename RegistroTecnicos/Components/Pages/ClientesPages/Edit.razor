@@ -1,5 +1,64 @@
-﻿<h3>Edit</h3>
+﻿@page "/Clientes/Edit/{ClienteId:int}"
+@inject ClientesServices ClientesServices
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 
 @code {
+    [Parameter]
+    public int? ClienteId { get; set; }
+
+    public Clientes Clientes { get; set; } = new Clientes();
+    public bool Existe { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ClienteId.HasValue)
+        {
+            Clientes.ClienteId = ClienteId.Value;
+            await Buscar();
+        }
+    }
+
+    public void Nuevo()
+    {
+        Clientes = new Clientes();
+        Existe = false;
+    }
+
+    public async Task Buscar()
+    {
+        var ClienteEncontrado = await ClientesServices.Buscar(Clientes.ClienteId);
+
+        if (ClienteEncontrado != null)
+        {
+            Clientes = ClienteEncontrado;
+        }
+    }
+
+    public async Task<bool> Validar()
+    {
+        Existe = await ClientesServices.Existe(Clientes.ClienteId, Clientes.Nombres);
+        return !Existe;
+    }
+
+    public async Task Guardar()
+    {
+        if (!await Validar())
+        {
+            return;
+        }
+
+        var guardo = await ClientesServices.Guardar(Clientes);
+        if (guardo)
+        {
+            Nuevo();
+        }
+    }
+
+    public async Task Eliminar()
+    {
+        var eliminado = await ClientesServices.Eliminar(Clientes.ClienteId);
+        Nuevo();
+    }
 
 }
