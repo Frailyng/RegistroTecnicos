@@ -1,5 +1,39 @@
-﻿<h3>Delete</h3>
+﻿@page "/Clientes/Delete"
+@page "/Clientes/Delete/{ClienteId:int}"
+@inject ClientesServices ClientesServices
+@inject NavigationManager navigationManager
+
+@rendermode InteractiveServer
 
 @code {
+    [Parameter]
+    public int ClienteId { get; set; }
+    public Clientes? Clientes { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ClienteId != 0)
+        {
+            Clientes = await ClientesServices.Buscar(ClienteId);
+        }
+    }
+
+    public async Task EliminarClientes()
+    {
+        if (ClienteId == 0 || Clientes == null)
+        {
+            return;
+        }
+
+        if (await ClientesServices.Eliminar(ClienteId))
+        {
+            Volver();
+        }
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/Clientes/Index");
+    }
 
 }
