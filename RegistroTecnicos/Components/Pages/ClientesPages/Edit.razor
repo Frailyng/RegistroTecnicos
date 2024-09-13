@@ -2,8 +2,7 @@
 @page "/Clientes/Edit/{ClienteId:int}"
 @inject ClientesServices ClientesServices
 @inject NavigationManager NavigationManager
-@rendermode InteractiveServer
-
+@inject IJSRuntime JSRuntime
 
 <EditForm Model="Clientes" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
@@ -28,7 +27,7 @@
 
             <div class="mb-3">
                 <label for="WhatsApp" class="form-label">WhatsApp:</label>
-                <InputText @bind-Value="Clientes.WhatsApp" class="form-control" />
+                <InputText id="whatsAppInput" @bind-Value="Clientes.WhatsApp" class="form-control" @oninput="@(e => FormatearTelefono())" />
                 <ValidationMessage For="@(() => Clientes.WhatsApp)" />
             </div>
         </div>
@@ -101,4 +100,28 @@
         Nuevo();
     }
 
+    private void FormatearTelefono()
+    {
+        JSRuntime.InvokeVoidAsync("formatearTelefono", "whatsAppInput");
+    }
 }
+
+<script>
+    function formatearTelefono(elementId) {
+        var input = document.getElementById(elementId);
+        var value = input.value.replace(/\D/g, ''); // Elimina cualquier cosa que no sea un número
+        var formattedValue = '';
+
+        if (value.length > 0) {
+            formattedValue = '(' + value.substring(0, 3);
+        }
+        if (value.length >= 4) {
+            formattedValue += ')-' + value.substring(3, 6);
+        }
+        if (value.length >= 7) {
+            formattedValue += '-' + value.substring(6, 10);
+        }
+
+        input.value = formattedValue;
+    }
+</script>
