@@ -93,6 +93,11 @@
             Message = $"Hello, World! This is a toast message. DateTime: {DateTime.Now}",
 
         };
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaClientes = await ClientesServices.Listar(c => true);
+    }
     public async Task Guardar()
     {
         var guardo = await ClientesServices.Guardar(Clientes);
