@@ -132,10 +132,10 @@
                         ListaTrabajos = await TrabajosService.Listar(p => p.TecnicoId == tecnicoId);
                     break;
                 case "NombreCliente":
-                    ListaTrabajos = await TrabajosService.Listar(p => p.Cliente != null && p.Cliente.Nombres.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
+                    ListaTrabajos = await TrabajosService.Listar(p => p.Cliente != null && p.Cliente.Nombres == valorFiltro);
                     break;
                 case "NombreTecnico":
-                    ListaTrabajos = await TrabajosService.Listar(p => p.Tecnico != null && p.Tecnico.Nombres.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
+                    ListaTrabajos = await TrabajosService.Listar(p => p.Tecnico != null && p.Tecnico.Nombres == valorFiltro);
                     break;
             }
         }
