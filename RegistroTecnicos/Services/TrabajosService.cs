@@ -65,9 +65,12 @@ public class TrabajosService
     public async Task<Trabajos?> Buscar(int id)
     {
         return await _context.Trabajos
+            .Include(t => t.Cliente)   
+            .Include(t => t.Tecnico)   
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.TrabajoId == id);
     }
+
 
     public async Task<List<Trabajos>> Listar(Expression<Func<Trabajos, bool>> criterio)
     {
