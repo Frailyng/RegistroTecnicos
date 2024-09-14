@@ -1,5 +1,62 @@
-﻿<h3>Details</h3>
+﻿@page "/Trabajos/Details"
+@page "/Trabajos/Details/{TrabajoId:int}"
+@inject TrabajosService TrabajosService
+@inject NavigationManager navigationManager
+
+<PageTitle>Detalles del Trabajo</PageTitle>
+
+@if (trabajo != null)
+{
+    <div class="container">
+        <div class="card shadow-header">
+            <div class="card-header bg-primary text-white text-center py-2 rounded">
+                <h3 class="text-center"><strong>Detalles del Trabajo</strong></h3>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><strong>TrabajoId:</strong> @trabajo.TrabajoId</li>
+                                <li><strong>Descripción:</strong> @trabajo.Descripcion</li>
+                                <li><strong>Fecha:</strong> @trabajo.Fecha?.ToShortDateString()</li>
+                                <li><strong>Monto:</strong> @trabajo.Monto</li>
+                                <li><strong>Cliente:</strong> @trabajo.Cliente?.Nombres</li>
+                                <li><strong>Técnico:</strong> @trabajo.Tecnico?.Nombres</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <button type="button" class="btn btn-outline-primary" @onclick="Volver">
+                    <i class="bi bi-box-arrow-left"></i> Volver
+                </button>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>Trabajo no encontrado.</p>
+}
 
 @code {
+    [Parameter]
+    public int TrabajoId { get; set; }
 
+    public Trabajos? trabajo { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (TrabajoId != 0)
+        {
+            trabajo = await TrabajosService.Buscar(TrabajoId);
+        }
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/Trabajos/Index");
+    }
 }
