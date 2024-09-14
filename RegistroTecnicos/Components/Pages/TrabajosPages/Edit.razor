@@ -3,6 +3,7 @@
 @inject ClientesServices ClientesService
 @inject TecnicoService TecnicoService
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <EditForm Model="Trabajo" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
@@ -66,6 +67,7 @@
             <div class="btn-group">
                 <button type="button" class="btn btn-outline-primary ml-2" @onclick="Nuevo"><span class="bi bi-plus"></span> Nuevo </button>
                 <button type="submit" class="btn btn-outline-success ml-2"><span class="bi bi-check-circle-fill"></span> Guardar </button>
+                <button type="button" class="btn btn-outline-warning ml-2" @onclick="FinalizarTrabajo"><span class="bi bi-check-circle-fill"></span> Finalizar Trabajo </button>
                 <a type="button" href="/Trabajos/Index/" class="btn btn-outline-danger"><span class="bi bi-arrow-bar-left"></span> Retroceder </a>
             </div>
         </div>
@@ -82,7 +84,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Cargar la lista de Clientes y Técnicos
         ListaClientes = await ClientesService.ObtenerListaClientes();
         ListaTecnicos = await TecnicoService.Listar(t => true);
 
@@ -117,4 +118,35 @@
             NavigationManager.NavigateTo("/Trabajos/Index");
         }
     }
+
+    private async Task FinalizarTrabajo()
+    {
+        var resultado = await TrabajosService.Eliminar(Trabajo.TrabajoId);
+
+        if (resultado)
+        {
+            // Obtener el número de WhatsApp del cliente
+            var cliente = ListaClientes.FirstOrDefault(c => c.ClienteId == Trabajo.ClienteId);
+            if (cliente != null && !string.IsNullOrEmpty(cliente.WhatsApp))
+            {
+                var mensaje = "El trabajo con ID " + Trabajo.TrabajoId + " ha sido finalizado.";
+                var numero = CleanPhoneNumber(cliente.WhatsApp); // Limpiar el número de WhatsApp
+                await JSRuntime.InvokeVoidAsync("open", $"https://api.whatsapp.com/send?phone={numero}&text={Uri.EscapeDataString(mensaje)}");
+            }
+
+            NavigationManager.NavigateTo("/Trabajos/Index");
+        }
+        else
+        {
+            // Aquí puedes manejar errores si ocurre algún problema al eliminar
+            await JSRuntime.InvokeVoidAsync("alert", "Error al finalizar el trabajo");
+        }
+    }
+
+    private string CleanPhoneNumber(string phoneNumber)
+    {
+        // Eliminar todos los caracteres que no sean dígitos
+        return new string(phoneNumber.Where(char.IsDigit).ToArray());
+    }
+
 }
