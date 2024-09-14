@@ -41,13 +41,26 @@ public class TrabajosService
             .AnyAsync(p => p.TrabajoId == TrabajoId);
     }
 
+    public async Task<bool> Existe(DateTime? Fecha,  int? TrabajoId = null)
+    {
+        return await _context.Trabajos
+            .AnyAsync(p => p.Fecha == Fecha);
+    }
+
+    public async Task<bool> Existe(int TrabajoId, DateTime? Fecha)
+    {
+        return await _context.Trabajos
+            .AnyAsync(p => p.TrabajoId != TrabajoId && p.Fecha.Equals(Fecha));
+    }
+
     public async Task<bool> Eliminar(int id)
     {
-        var Trabajos = await _context.Trabajos
-            .Where(p => p.TrabajoId != id)
+        var trabajosEliminados = await _context.Trabajos
+            .Where(p => p.TrabajoId == id)
             .ExecuteDeleteAsync();
-        return Trabajos > 0;
+        return trabajosEliminados > 0;
     }
+
 
     public async Task<Trabajos?> Buscar(int id)
     {
@@ -59,8 +72,12 @@ public class TrabajosService
     public async Task<List<Trabajos>> Listar(Expression<Func<Trabajos, bool>> criterio)
     {
         return await _context.Trabajos
+            .Include(t => t.Cliente)
+            .Include(t => t.Tecnico)
             .AsNoTracking()
             .Where(criterio)
             .ToListAsync();
     }
+
+
 }

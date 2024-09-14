@@ -1,5 +1,162 @@
-﻿<h3>Index</h3>
+﻿@page "/Trabajos/Index"
+@inject TrabajosService TrabajosService
+@inject ClientesServices ClientesServices
+@inject TiposTecnicosService TecnicosService
+@rendermode InteractiveServer
+
+<EditForm Model="ListaTrabajos" class="border shadow-lg p-4 rounded bg-light">
+    <Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopRight" />
+
+    <div class="card-header bg-lightgreen text-dark text-center py-3 rounded">
+        <h3 class="mb-0 font-weight-bold">Consulta de Trabajos</h3>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <label for="Filtro" class="form-label">Filtrar por:</label>
+                <select @bind="filtro" class="form-select">
+                    <option value="Id">TrabajoId</option>
+                    <option value="ClienteId">ClienteId</option>
+                    <option value="TecnicoId">TecnicoId</option>
+                    <option value="NombreCliente">Nombre del Cliente</option>
+                    <option value="NombreTecnico">Nombre del Técnico</option>
+                    <option value="Fecha">Fecha</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="ValorFiltro" class="form-label">Búsqueda:</label>
+                <div class="input-group">
+                    @if (filtro == "Fecha")
+                    {
+                        <input @bind="fechaFiltro" type="date" class="form-control" placeholder="Buscar por Fecha" />
+                    }
+                    else
+                    {
+                        <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                    }
+                    <button @onclick="Buscar" class="btn btn-primary" type="button">
+                        <span class="bi bi-search"></span> Buscar
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-3 text-end">
+                <a href="/Trabajos/Create" class="btn btn-success">
+                    <span class="bi bi-plus-circle"></span> Crear
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-bordered text-center shadow-sm rounded">
+        <thead class="bg-darkgreen text-white">
+            <tr>
+                <th>TrabajoId</th>
+                <th>Fecha</th>
+                <th>ClienteId</th>
+                <th>Nombre del Cliente</th>
+                <th>TecnicoId</th>
+                <th>Nombre del Técnico</th>
+                <th>Descripción</th>
+                <th>Monto</th>
+                <th>Ver</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var trabajo in ListaTrabajos)
+            {
+                <tr>
+                    <td>@trabajo.TrabajoId</td>
+                    <td>@trabajo.Fecha?.ToShortDateString()</td>
+                    <td>@trabajo.ClienteId</td>
+                    <td>@trabajo.Cliente?.Nombres</td>
+                    <td>@trabajo.TecnicoId</td>
+                    <td>@trabajo.Tecnico?.Nombres</td>
+                    <td>@trabajo.Descripcion</td>
+                    <td>@trabajo.Monto</td>
+                    <td>
+                        <a class="btn btn-outline-primary" href="/Trabajos/Details/@trabajo.TrabajoId">
+                            <span class="bi bi-info-circle-fill"></span>
+                        </a>
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-success" href="/Trabajos/Edit/@trabajo.TrabajoId">
+                            <span class="bi bi-pencil-fill"></span>
+                        </a>
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-danger" href="/Trabajos/Delete/@trabajo.TrabajoId">
+                            <span class="bi bi-trash-fill"></span>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</EditForm>
 
 @code {
+    public Trabajos Trabajos = new Trabajos();
+    public Clientes Clientes = new Clientes();
+    public Tecnicos Tecnicos = new Tecnicos();
+    public List<Trabajos> ListaTrabajos = new List<Trabajos>();
+    List<ToastMessage> messages = new List<ToastMessage>();
 
+    private string filtro = "Id";
+    private string valorFiltro = "";
+    private DateTime? fechaFiltro = null;
+
+    private void ShowMessage(ToastType toastType) => messages.Add(CreatetoastMessage(toastType));
+
+    private ToastMessage CreatetoastMessage(ToastType toastType) => new ToastMessage
+        {
+            Type = toastType,
+            Title = "Blazor Bootstrap",
+            HelpText = $"{DateTime.Now}",
+            Message = $"Hello, World! This is a toastMessage. DateTime: {DateTime.Now}",
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaTrabajos = await TrabajosService.Listar(c => true);
+    }
+
+    private async Task Buscar()
+    {
+        if (filtro == "Fecha" && fechaFiltro != null)
+        {
+            ListaTrabajos = await TrabajosService.Listar(p => p.Fecha.Value.Date == fechaFiltro.Value.Date);
+        }
+        else if (!string.IsNullOrEmpty(valorFiltro.Trim()))
+        {
+            switch (filtro)
+            {
+                case "Id":
+                    if (int.TryParse(valorFiltro, out int trabajoId))
+                        ListaTrabajos = await TrabajosService.Listar(p => p.TrabajoId == trabajoId);
+                    break;
+                case "ClienteId":
+                    if (int.TryParse(valorFiltro, out int clienteId))
+                        ListaTrabajos = await TrabajosService.Listar(p => p.ClienteId == clienteId);
+                    break;
+                case "TecnicoId":
+                    if (int.TryParse(valorFiltro, out int tecnicoId))
+                        ListaTrabajos = await TrabajosService.Listar(p => p.TecnicoId == tecnicoId);
+                    break;
+                case "NombreCliente":
+                    ListaTrabajos = await TrabajosService.Listar(p => p.Cliente != null && p.Cliente.Nombres.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
+                    break;
+                case "NombreTecnico":
+                    ListaTrabajos = await TrabajosService.Listar(p => p.Tecnico != null && p.Tecnico.Nombres.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
+                    break;
+            }
+        }
+        else
+        {
+            ListaTrabajos = await TrabajosService.Listar(p => true);
+        }
+    }
 }
+
+
