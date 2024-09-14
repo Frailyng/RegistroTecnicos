@@ -9,6 +9,10 @@ public class TrabajosService
 {
     private readonly Contexto _context;
 
+    public TrabajosService(Contexto context)
+    {
+        _context = context;
+    }
 
     public async Task<bool> Guardar(Trabajos Trabajos)
     {
@@ -20,7 +24,7 @@ public class TrabajosService
 
     private async Task<bool> Insertar(Trabajos Trabajos)
     {
-        _context.Trabajos
+        _context.Trabajos.Add(Trabajos);
         return await _context.SaveChangesAsync() > 0;
 
     }
@@ -28,5 +32,35 @@ public class TrabajosService
     private async Task <bool> Modificar(Trabajos Trabajos)
     {
         _context.Update(Trabajos);
+        return await _context.SaveChangesAsync() > 0;
+    }
+
+    public async Task <bool> Existe(int TrabajoId)
+    {
+        return await _context.Trabajos
+            .AnyAsync(p => p.TrabajoId == TrabajoId);
+    }
+
+    public async Task<bool> Eliminar(int id)
+    {
+        var Trabajos = await _context.Trabajos
+            .Where(p => p.TrabajoId != id)
+            .ExecuteDeleteAsync();
+        return Trabajos > 0;
+    }
+
+    public async Task<Trabajos?> Buscar(int id)
+    {
+        return await _context.Trabajos
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.TrabajoId == id);
+    }
+
+    public async Task<List<Trabajos>> Listar(Expression<Func<Trabajos, bool>> criterio)
+    {
+        return await _context.Trabajos
+            .AsNoTracking()
+            .Where(criterio)
+            .ToListAsync();
     }
 }
