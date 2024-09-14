@@ -66,12 +66,15 @@ public class TecnicoService
             .FirstOrDefaultAsync(p => p.TecnicoId == id);
     }
 
-    // Aquí va el método Listar modificado
     public async Task<List<Tecnicos>> Listar(Expression<Func<Tecnicos, bool>> criterio)
     {
         return await _context.Tecnicos
             .AsNoTracking()
             .Where(criterio)
             .ToListAsync();
+    }
+    public async Task<List<Tecnicos>> ObtenerListaTecnicos()
+    {
+        return await _context.Tecnicos.AsNoTracking().ToListAsync();
     }
 }

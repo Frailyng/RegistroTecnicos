@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using RegistroTecnicos.DAL;
 using RegistroTecnicos.Models;
+
 namespace RegistroTecnicos.Services;
 
 public class ClientesServices
@@ -27,13 +28,13 @@ public class ClientesServices
         return await _context.SaveChangesAsync() > 0;
     }
 
-    private async Task <bool> Modificar(Clientes Clientes)
+    private async Task<bool> Modificar(Clientes Clientes)
     {
         _context.Update(Clientes);
         return await _context.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> Existe (int ClienteId)
+    public async Task<bool> Existe(int ClienteId)
     {
         return await _context.Clientes
             .AnyAsync(p => p.ClienteId == ClienteId);
@@ -64,8 +65,8 @@ public class ClientesServices
         return await _context.Clientes
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.ClienteId == id);
-
     }
+
     public async Task<List<Clientes>> Listar(Expression<Func<Clientes, bool>> criterio)
     {
         return await _context.Clientes
@@ -73,5 +74,8 @@ public class ClientesServices
             .Where(criterio)
             .ToListAsync();
     }
-
+    public async Task<List<Clientes>> ObtenerListaClientes()
+    {
+        return await _context.Clientes.AsNoTracking().ToListAsync();
+    }
 }
