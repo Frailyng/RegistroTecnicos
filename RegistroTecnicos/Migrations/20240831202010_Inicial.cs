@@ -82,6 +82,20 @@ namespace RegistroTecnicos.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Prioridades",
+                columns: table => new
+                {
+                    PrioridadId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Descripcion = table.Column<string>(type: "TEXT", nullable: false),
+                    Tiempo = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tecnicos", x => x.PrioridadId);
+                });
+
             // Create indexes to improve query performance
             migrationBuilder.CreateIndex(
                 name: "IX_Trabajos_ClienteId",
@@ -109,6 +123,9 @@ namespace RegistroTecnicos.Migrations
 
             migrationBuilder.DropTable(
                name: "Trabajos");
+
+            migrationBuilder.DropTable(
+               name: "Prioridades");
         }
     }
 }
