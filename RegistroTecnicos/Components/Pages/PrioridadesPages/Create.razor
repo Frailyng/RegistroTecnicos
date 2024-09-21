@@ -29,14 +29,24 @@
                 <InputText @bind-Value="Prioridades.Descripcion" class="form-control" />
                 <ValidationMessage For="@(() => Prioridades.Descripcion)" />
             </div>
-        </div>
 
-            @* Tiempo *@
-            <div class="mb-3">
-                <label for="Tiempo" class="form-label">Tiempo:</label>
-                <InputText @bind-Value="Prioridades.Tiempo" class="form-control" />
-                <ValidationMessage For="@(() => Prioridades.Tiempo)" />
+            @* Tiempo: Selección manual de horas, minutos y segundos *@
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="Horas" class="form-label">Horas:</label>
+                    <InputNumber @bind-Value="Horas" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label for="Minutos" class="form-label">Minutos:</label>
+                    <InputNumber @bind-Value="Minutos" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label for="Segundos" class="form-label">Segundos:</label>
+                    <InputNumber @bind-Value="Segundos" class="form-control" />
+                </div>
             </div>
+
+        </div>
 
         <div class="card-footer bg-light d-flex justify-content-center mt-3">
             <div class="btn-group">
@@ -53,11 +63,19 @@
     public int PrioridadId { get; set; }
 
     public Prioridades Prioridades { get; set; } = new Prioridades();
+
+    public int Horas { get; set; }
+    public int Minutos { get; set; }
+    public int Segundos { get; set; }
+
     private bool Existe = false;
 
     public void Nuevo()
     {
         Prioridades = new Prioridades();
+        Horas = 0;
+        Minutos = 0;
+        Segundos = 0;
         Existe = false;
     }
 
@@ -89,6 +107,9 @@
             return;
         }
 
+        // Convertir horas, minutos y segundos a un formato de tiempo
+        Prioridades.Tiempo = $"{Horas:D2}:{Minutos:D2}:{Segundos:D2}";
+
         var guardo = await PrioridadesService.Guardar(Prioridades);
         if (guardo)
         {
@@ -102,3 +123,4 @@
         Nuevo();
     }
 }
+
