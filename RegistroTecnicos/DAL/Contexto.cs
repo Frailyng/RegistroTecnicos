@@ -12,7 +12,7 @@ public class Contexto : DbContext
     public DbSet<Clientes> Clientes { get; set; }
     public DbSet<Trabajos> Trabajos { get; set; }
 
-    public DbSet<Prioridades> Priidades { get; set; }
+    public DbSet<Prioridades> Prioridades { get; set; }
 
     // Configuración de relaciones si es necesario
     protected override void OnModelCreating(ModelBuilder modelBuilder)
