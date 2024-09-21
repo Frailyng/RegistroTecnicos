@@ -1,5 +1,129 @@
 ﻿@page "/Prioridades/Index"
+@inject PrioridadesService PrioridadesService
+@rendermode InteractiveServer
+
+
+<EditForm Model="ListaPrioridades" class="border shadow-lg p-4 rounded bg-light">
+    <Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopRight" />
+
+    <div class="card-header bg-lightgreen text-dark text-center py-3 rounded">
+        <h3 class="mb-0 font-weight-bold">Consulta de Prioridades</h3>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <label for="Filtro" class="form-label">Filtrar por:</label>
+                <select @bind="filtro" class="form-select">
+                    <option value="Id">PrioridadId</option>
+                    <option value="Descripcion">Descripcion</option>
+                    <option value="Tiempo">Tiempo</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="ValorFiltro" class="form-label">Búsqueda:</label>
+                <div class="input-group">
+                    <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                    <button @onclick="Buscar" class="btn btn-primary" type="button">
+                        <span class="bi bi-search"></span> Buscar
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-3 text-end">
+                <a href="/Prioridades/Create" class="btn btn-success">
+                    <span class="bi bi-plus-circle"></span> Crear
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-bordered text-center shadow-sm rounded">
+        <thead class="bg-darkgreen text-white">
+            <tr>
+                <th>PrioridadID</th>
+                <th>Descripcion</th>
+                <th>Tiempo</th>
+                <th>Ver</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Prioridades in ListaPrioridades)
+            {
+                <tr>
+                    <td>@Prioridades.PrioridadId</td>
+                    <td>@Prioridades.Descripcion</td>
+                    <td>@Prioridades.Tiempo</td>
+                    <td>
+                        <a class="btn btn-outline-primary" href="/Prioridades/Details/@Prioridades.PrioridadId">
+                            <span class="bi bi-info-circle-fill"></span>
+                        </a>
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-success" href="/Prioridades/Edit/@Prioridades.PrioridadId">
+                            <span class="bi bi-pencil-fill"></span>
+                        </a>
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-danger" href="/Prioridades/Delete/@Prioridades.PrioridadId">
+                            <span class="bi bi-trash-fill"></span>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</EditForm>
 
 @code {
+    public Prioridades Prioridades = new Prioridades();
+    public List<Prioridades> ListaPrioridades = new List<Prioridades>();
+    List<ToastMessage> messages = new List<ToastMessage>();
+
+    private string filtro = "Id";
+    private string valorFiltro = "";
+
+    private void ShowMessage(ToastType toastType) => messages.Add(CreateToastMessage(toastType));
+
+    private ToastMessage CreateToastMessage(ToastType toastType) => new ToastMessage
+        {
+            Type = toastType,
+            Title = "Blazor Bootstrap",
+            HelpText = $"{DateTime.Now}",
+            Message = $"Hello, World! This is a toast message. DateTime: {DateTime.Now}",
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaPrioridades = await PrioridadesService.Listar(c => true);
+    }
+
+    public async Task Guardar()
+    {
+        var guardo = await PrioridadesService.Guardar(Prioridades);
+    }
+
+    private async Task Buscar()
+    {
+        if (valorFiltro.Trim() != "")
+        {
+            if (filtro == "Id" && int.TryParse(valorFiltro, out int PrioridadId))
+            {
+                ListaPrioridades = await PrioridadesService.Listar(p => p.PrioridadId == PrioridadId);
+            } 
+            else if (filtro == "Descripcion")
+            {
+                ListaPrioridades = await PrioridadesService.Listar(p => p.Descripcion == valorFiltro);
+            }
+            else if (filtro == "Tiempo")
+            {
+                ListaPrioridades = await PrioridadesService.Listar(p => p.Tiempo == valorFiltro);
+            }
+        }
+        else
+        {
+            ListaPrioridades = await PrioridadesService.Listar(p => true);
+        }
+    }
 
 }
