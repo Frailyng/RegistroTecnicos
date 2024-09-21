@@ -93,7 +93,7 @@ namespace RegistroTecnicos.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tecnicos", x => x.PrioridadId);
+                    table.PrimaryKey("PK_Prioridades", x => x.PrioridadId);
                 });
 
             // Create indexes to improve query performance
