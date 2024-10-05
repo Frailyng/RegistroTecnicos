@@ -29,9 +29,9 @@
                 </div>
             </div>
             <div class="card-footer text-center">
-                <button type="button" class="btn btn-outline-primary" @onclick="Volver">
+                <a class="btn btn-outline-primary" href="/Trabajos/Index">
                     <i class="bi bi-box-arrow-left"></i> Volver
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -53,10 +53,5 @@ else
         {
             trabajo = await TrabajosService.Buscar(TrabajoId);
         }
-    }
-
-    public void Volver()
-    {
-        navigationManager.NavigateTo("/Trabajos/Index");
     }
 }
