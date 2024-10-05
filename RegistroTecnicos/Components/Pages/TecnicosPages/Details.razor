@@ -27,9 +27,9 @@
                 </div>
             </div>
             <div class="card-footer text-center">
-                <button type="button" class="btn btn-outline-primary" @onclick="Volver">
+                <a href="/Tecnico/Index" class="btn btn-outline-primary">
                     <i class="bi bi-box-arrow-left"></i> Volver
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -51,10 +51,5 @@ else
         {
             Tecnico = await TecnicoService.Buscar(TecnicoId);
         }
-    }
-
-    public void Volver()
-    {
-        navigationManager.NavigateTo("/Tecnico/Index");
     }
 }
