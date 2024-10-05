@@ -53,9 +53,9 @@
                 <button type="button" class="btn btn-outline-danger" @onclick="EliminarTrabajo">
                     <i class="bi bi-trash-fill"></i> Eliminar
                 </button>
-                <button type="button" class="btn btn-outline-primary" @onclick="Volver">
+                <a class="btn btn-outline-primary" href="/Trabajos/Index">
                     <i class="bi bi-box-arrow-left"></i> Volver
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -87,12 +87,8 @@ else
 
         if (await TrabajosService.Eliminar(TrabajoId))
         {
-            Volver();
+            navigationManager.NavigateTo("/Trabajos/Index");
         }
     }
-
-    public void Volver()
-    {
-        navigationManager.NavigateTo("/Trabajos/Index");
-    }
 }
+
