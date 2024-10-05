@@ -2,6 +2,7 @@
 @inject TrabajosService TrabajosService
 @inject ClientesServices ClientesServices
 @inject TecnicoService TecnicoService
+@inject PrioridadesService PrioridadesService // Inyectar el servicio de prioridades
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
@@ -62,6 +63,19 @@
                 <ValidationMessage For="@(() => Trabajo.Monto)" />
             </div>
 
+            <!-- Prioridad (Cargar desde Prioridades) -->
+            <div class="mb-3">
+                <label for="PrioridadId" class="form-label">Prioridad:</label>
+                <InputSelect @bind-Value="Trabajo.PrioridadId" class="form-control">
+                    <option value="">Seleccione una prioridad</option>
+                    @foreach (var prioridad in ListaPrioridades)
+                    {
+                        <option value="@prioridad.PrioridadId">@prioridad.Descripcion</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => Trabajo.PrioridadId)" />
+            </div>
+
             <div class="d-flex justify-content-between">
                 <button type="submit" class="btn btn-primary">Guardar</button>
                 <a href="/Trabajos/Index" class="btn btn-secondary">Cancelar</a>
@@ -74,6 +88,7 @@
     private Trabajos Trabajo = new Trabajos();
     private List<Clientes> ListaClientes = new List<Clientes>();
     private List<Tecnicos> ListaTecnicos = new List<Tecnicos>();
+    private List<Prioridades> ListaPrioridades = new List<Prioridades>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -82,6 +97,7 @@
 
         ListaClientes = await ClientesServices.ObtenerListaClientes();
         ListaTecnicos = await TecnicoService.ObtenerListaTecnicos();
+        ListaPrioridades = await PrioridadesService.ObtenerListaPrioridades(); 
     }
 
     private async Task Guardar()

@@ -75,5 +75,10 @@ public class PrioridadesService
             .ToListAsync();
 
     }
-        
+
+    public async Task<List<Prioridades>> ObtenerListaPrioridades()
+    {
+        return await _context.Prioridades.AsNoTracking().ToListAsync();
+    }
+
 }
