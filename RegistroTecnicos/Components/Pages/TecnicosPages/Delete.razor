@@ -34,7 +34,7 @@
                                                 <ul class="list-unstyled">
                                                     <li><strong>TecnicoId:</strong> @Tecnico.TecnicoId</li>
                                                     <li><strong>Nombres:</strong> @Tecnico.Nombres</li>
-                                                    <li><strong>Descripcion:</strong>@Tecnico.Descripcion</li>
+                                                    <li><strong>Descripción:</strong> @Tecnico.Descripcion</li>
                                                     <li><strong>Sueldo Por Hora:</strong> @Tecnico.SueldoHora</li>
                                                 </ul>
                                             </div>
@@ -51,9 +51,9 @@
                 <button type="button" class="btn btn-outline-danger" @onclick="EliminarTecnico">
                     <i class="bi bi-trash-fill"></i> Eliminar
                 </button>
-                <button type="button" class="btn btn-outline-primary" @onclick="Volver">
+                <a href="/Tecnico/Index" class="btn btn-outline-primary">
                     <i class="bi bi-box-arrow-left"></i> Volver
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -85,12 +85,8 @@ else
 
         if (await TecnicoService.Eliminar(TecnicoId))
         {
-            Volver();
+            navigationManager.NavigateTo("/Tecnico/Index");
         }
     }
-
-    public void Volver()
-    {
-        navigationManager.NavigateTo("/Tecnico/Index");
-    }
 }
+
