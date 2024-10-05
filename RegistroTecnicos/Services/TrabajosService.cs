@@ -66,7 +66,8 @@ public class TrabajosService
     {
         return await _context.Trabajos
             .Include(t => t.Cliente)   
-            .Include(t => t.Tecnico)   
+            .Include(t => t.Tecnico) 
+            .Include(t => t.Prioridad)
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.TrabajoId == id);
     }
@@ -77,6 +78,7 @@ public class TrabajosService
         return await _context.Trabajos
             .Include(t => t.Cliente)
             .Include(t => t.Tecnico)
+            .Include(t => t.Prioridad)
             .AsNoTracking()
             .Where(criterio)
             .ToListAsync();

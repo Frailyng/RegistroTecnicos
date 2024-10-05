@@ -18,6 +18,7 @@
                     <option value="NombreCliente">Nombre del Cliente</option>
                     <option value="NombreTecnico">Nombre del Técnico</option>
                     <option value="Fecha">Fecha</option>
+                    <option value="Prioridad">Prioridad</option>
                 </select>
             </div>
             <div class="col-md-6">
@@ -55,6 +56,7 @@
                 <th>Nombre del Técnico</th>
                 <th>Descripción</th>
                 <th>Monto</th>
+                <th>Prioridad</th>
                 <th>Ver</th>
                 <th>Editar</th>
                 <th>Eliminar</th>
@@ -72,6 +74,7 @@
                     <td>@trabajo.Tecnico?.Nombres</td>
                     <td>@trabajo.Descripcion</td>
                     <td>@trabajo.Monto</td>
+                    <td>@trabajo.Prioridad?.Descripcion</td>
                     <td>
                         <a class="btn btn-outline-primary" href="/Trabajos/Details/@trabajo.TrabajoId">
                             <span class="bi bi-eye"></span>
@@ -111,32 +114,35 @@
 
     private async Task Buscar()
     {
-        if (filtro == "Fecha" && fechaFiltro != null)
+        if (valorFiltro.Trim() != "")
         {
-            ListaTrabajos = await TrabajosService.Listar(p => p.Fecha.Value.Date == fechaFiltro.Value.Date);
-        }
-        else if (!string.IsNullOrEmpty(valorFiltro.Trim()))
-        {
-            switch (filtro)
+            if (filtro == "Id" && int.TryParse(valorFiltro, out int trabajoId))
             {
-                case "Id":
-                    if (int.TryParse(valorFiltro, out int trabajoId))
-                        ListaTrabajos = await TrabajosService.Listar(p => p.TrabajoId == trabajoId);
-                    break;
-                case "ClienteId":
-                    if (int.TryParse(valorFiltro, out int clienteId))
-                        ListaTrabajos = await TrabajosService.Listar(p => p.ClienteId == clienteId);
-                    break;
-                case "TecnicoId":
-                    if (int.TryParse(valorFiltro, out int tecnicoId))
-                        ListaTrabajos = await TrabajosService.Listar(p => p.TecnicoId == tecnicoId);
-                    break;
-                case "NombreCliente":
-                    ListaTrabajos = await TrabajosService.Listar(p => p.Cliente != null && p.Cliente.Nombres == valorFiltro);
-                    break;
-                case "NombreTecnico":
-                    ListaTrabajos = await TrabajosService.Listar(p => p.Tecnico != null && p.Tecnico.Nombres == valorFiltro);
-                    break;
+                ListaTrabajos = await TrabajosService.Listar(p => p.TrabajoId == trabajoId);
+            }
+            else if (filtro == "ClienteId" && int.TryParse(valorFiltro, out int clienteId))
+            {
+                ListaTrabajos = await TrabajosService.Listar(p => p.ClienteId == clienteId);
+            }
+            else if (filtro == "TecnicoId" && int.TryParse(valorFiltro, out int tecnicoId))
+            {
+                ListaTrabajos = await TrabajosService.Listar(p => p.TecnicoId == tecnicoId);
+            }
+            else if (filtro == "NombreCliente")
+            {
+                ListaTrabajos = await TrabajosService.Listar(p => p.Cliente != null && p.Cliente.Nombres.Contains(valorFiltro));
+            }
+            else if (filtro == "NombreTecnico")
+            {
+                ListaTrabajos = await TrabajosService.Listar(p => p.Tecnico != null && p.Tecnico.Nombres.Contains(valorFiltro));
+            }
+            else if (filtro == "Fecha" && DateTime.TryParse(valorFiltro, out DateTime fecha))
+            {
+                ListaTrabajos = await TrabajosService.Listar(p => p.Fecha.Value.Date == fecha.Date);
+            }
+            else if (filtro == "Prioridad")
+            {
+                ListaTrabajos = await TrabajosService.Listar(p => p.Prioridad != null && p.Prioridad.Descripcion.Contains(valorFiltro));
             }
         }
         else
@@ -145,4 +151,5 @@
         }
     }
 }
+
 
