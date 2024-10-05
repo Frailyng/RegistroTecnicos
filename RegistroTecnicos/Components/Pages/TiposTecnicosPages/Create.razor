@@ -29,12 +29,10 @@
 
             <div class="mb-3">
                 <label for="Activo" class="form-label">Activo:</label>
-                <InputSelect @bind-Value="TipoTecnico.Activo" class="form-control">
-                    <option value="true">True</option>
-                    <option value="false">False</option>
-                </InputSelect>
+                <InputCheckbox @bind-Value="TipoTecnico.Activo" class="form-check-input" />
                 <ValidationMessage For="@(() => TipoTecnico.Activo)" />
             </div>
+
 
         </div>
 

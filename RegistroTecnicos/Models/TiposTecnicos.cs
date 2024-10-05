@@ -9,5 +9,5 @@ public class TiposTecnicos
     [Required(ErrorMessage = "El Campo Descripcion es obligatorio")]
     public string? Descripcion { get; set; }
 
-    public bool? Activo {  get; set; }
+    public bool Activo {  get; set; }
 }
