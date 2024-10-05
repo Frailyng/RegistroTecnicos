@@ -32,9 +32,9 @@
                                         <div class="row">
                                             <div class="col-md-8">
                                                 <ul class="list-unstyled">
-                                                    <li><strong>TecnicoId:</strong> @Clientes.ClienteId</li>
+                                                    <li><strong>ClienteId:</strong> @Clientes.ClienteId</li>
                                                     <li><strong>Nombres:</strong> @Clientes.Nombres</li>
-                                                    <li><strong>Descripcion:</strong>@Clientes.WhatsApp</li>
+                                                    <li><strong>WhatsApp:</strong> @Clientes.WhatsApp</li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -50,9 +50,9 @@
                 <button type="button" class="btn btn-outline-danger" @onclick="EliminarClientes">
                     <i class="bi bi-trash-fill"></i> Eliminar
                 </button>
-                <button type="button" class="btn btn-outline-primary" @onclick="Volver">
+                <a href="/Clientes/Index" class="btn btn-outline-primary">
                     <i class="bi bi-box-arrow-left"></i> Volver
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -84,13 +84,7 @@ else
 
         if (await ClientesServices.Eliminar(ClienteId))
         {
-            Volver();
+            navigationManager.NavigateTo("/Clientes/Index");
         }
     }
-
-    public void Volver()
-    {
-        navigationManager.NavigateTo("/Clientes/Index");
-    }
-
 }
