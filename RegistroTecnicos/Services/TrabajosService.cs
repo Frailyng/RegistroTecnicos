@@ -5,15 +5,29 @@ using RegistroTecnicos.Models;
 
 namespace RegistroTecnicos.Services;
 
-public class TrabajosService
+public class TrabajosService(Contexto contexto)
 {
-    private readonly Contexto _context;
-
-    public TrabajosService(Contexto context)
+    public async Task<bool> Existe(int TrabajoId)
     {
-        _context = context;
+        return await contexto.Trabajos
+            .AnyAsync(p => p.TrabajoId == TrabajoId);
     }
 
+    public async Task<bool> Insertar(Trabajos Trabajos)
+    {
+        contexto.Trabajos.Add(Trabajos);
+        await AfectarTrabajos(Trabajos.TrabajosDetalle.ToArray());
+         return await contexto.SaveChangesAsync() > 0;
+
+    }
+
+    public async Task AfectarTrabajos(TrabajosDetalle[] detalle)
+    {
+        foreach (var item in detalle)
+        {
+            var trabajo = await contexto.Trabajos.SingleAsync(t => t.TrabajoId == item.TrabajoId);
+        }
+    }
     public async Task<bool> Guardar(Trabajos Trabajos)
     {
         if (!await Existe(Trabajos.TrabajoId))
@@ -22,40 +36,31 @@ public class TrabajosService
             return await Modificar(Trabajos);
     }
 
-    private async Task<bool> Insertar(Trabajos Trabajos)
-    {
-        _context.Trabajos.Add(Trabajos);
-        return await _context.SaveChangesAsync() > 0;
-
-    }
+   
 
     private async Task <bool> Modificar(Trabajos Trabajos)
     {
-        _context.Update(Trabajos);
-        return await _context.SaveChangesAsync() > 0;
+        contexto.Update(Trabajos);
+        return await contexto.SaveChangesAsync() > 0;
     }
 
-    public async Task <bool> Existe(int TrabajoId)
-    {
-        return await _context.Trabajos
-            .AnyAsync(p => p.TrabajoId == TrabajoId);
-    }
+   
 
     public async Task<bool> Existe(DateTime? Fecha,  int? TrabajoId = null)
     {
-        return await _context.Trabajos
+        return await contexto.Trabajos
             .AnyAsync(p => p.Fecha == Fecha);
     }
 
     public async Task<bool> Existe(int TrabajoId, DateTime? Fecha)
     {
-        return await _context.Trabajos
+        return await contexto.Trabajos
             .AnyAsync(p => p.TrabajoId != TrabajoId && p.Fecha.Equals(Fecha));
     }
 
     public async Task<bool> Eliminar(int id)
     {
-        var trabajosEliminados = await _context.Trabajos
+        var trabajosEliminados = await contexto.Trabajos
             .Where(p => p.TrabajoId == id)
             .ExecuteDeleteAsync();
         return trabajosEliminados > 0;
@@ -64,7 +69,7 @@ public class TrabajosService
 
     public async Task<Trabajos?> Buscar(int id)
     {
-        return await _context.Trabajos
+        return await contexto.Trabajos
             .Include(t => t.Cliente)   
             .Include(t => t.Tecnico) 
             .Include(t => t.Prioridad)
@@ -75,7 +80,7 @@ public class TrabajosService
 
     public async Task<List<Trabajos>> Listar(Expression<Func<Trabajos, bool>> criterio)
     {
-        return await _context.Trabajos
+        return await contexto.Trabajos
             .Include(t => t.Cliente)
             .Include(t => t.Tecnico)
             .Include(t => t.Prioridad)
