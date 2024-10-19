@@ -154,13 +154,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Asignar la fecha actual
+       
         Trabajo.Fecha = DateTime.Today;
+
         ListaArticulos = await ArticulosService.Listar(a => true);
         ListaClientes = await ClientesServices.ObtenerListaClientes();
         ListaTecnicos = await TecnicoService.ObtenerListaTecnicos();
         ListaPrioridades = await PrioridadesService.ObtenerListaPrioridades();
     }
+
 
     private async Task HandleArticuloSelected((Articulos articulos, int cantidad, double precio) selection)
     {
@@ -183,35 +185,35 @@
     public double MontoTotal => Trabajo.Total + Trabajo.TrabajosDetalle.Sum(d => d.Precio);
 
    
-        public async Task Guardar()
+    public async Task Guardar()
+    {
+        try
         {
-            try
-            {
-                // Crear una copia del trabajo sin los detalles
-                var trabajoSinDetalles = new Trabajos
-                    {
-                        TrabajoId = Trabajo.TrabajoId,
-                        Fecha = Trabajo.Fecha,
-                        ClienteId = Trabajo.ClienteId,
-                        TecnicoId = Trabajo.TecnicoId,
-                        Descripcion = Trabajo.Descripcion,
-                        Total = MontoTotal,
-                        PrioridadId = Trabajo.PrioridadId
-                    };
-
-                var guardo = await TrabajosService.Guardar(trabajoSinDetalles);
-
-                if (guardo)
+            // Crear una nueva instancia de Trabajos con detalles
+            var trabajoSinDetalles = new Trabajos
                 {
-                    navigationManager.NavigateTo("/Trabajos/Index");
-                }
-            }
-            catch (Exception ex)
+                    TrabajoId = Trabajo.TrabajoId,
+                    Fecha = Trabajo.Fecha,
+                    ClienteId = Trabajo.ClienteId,
+                    TecnicoId = Trabajo.TecnicoId,
+                    Descripcion = Trabajo.Descripcion,
+                    Total = MontoTotal,
+                    PrioridadId = Trabajo.PrioridadId,
+                };
+
+            var guardo = await TrabajosService.Guardar(trabajoSinDetalles);
+
+            if (guardo)
             {
-                // Manejar la excepción, por ejemplo, mostrando un mensaje de error
-                await JSRuntime.InvokeVoidAsync("alert", $"Ocurrió un error al guardar el trabajo: {ex.Message}");
+                navigationManager.NavigateTo("/Trabajos/Index");
             }
         }
+        catch (Exception ex)
+        {
+            // Manejar la excepción, por ejemplo, mostrando un mensaje de error
+            await JSRuntime.InvokeVoidAsync("alert", $"Ocurrió un error al guardar el trabajo: {ex.Message}");
+        }
+    }
 
 
 
