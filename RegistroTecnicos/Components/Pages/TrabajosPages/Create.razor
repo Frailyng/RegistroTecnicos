@@ -2,7 +2,7 @@
 @inject TrabajosService TrabajosService
 @inject ClientesServices ClientesServices
 @inject TecnicoService TecnicoService
-@inject PrioridadesService PrioridadesService // Inyectar el servicio de prioridades
+@inject PrioridadesService PrioridadesService
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
@@ -10,6 +10,7 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
 
+    <div class="container"
     <div class="card shadow-lg border-0 rounded" style="background-color: #f8f9fa;">
         <div class="card-header bg-primary text-white" style="text-align: center;">
             <h3><i class="fas fa-clipboard-list"></i> Registro de Trabajos</h3>
@@ -22,6 +23,22 @@
                 <InputDate @bind-Value="Trabajo.Fecha" class="form-control" />
                 <ValidationMessage For="@(() => Trabajo.Fecha)" />
             </div>
+
+             <!-- Articulo -->
+            <div class="mb-3">
+                <label for="ArticuloId" class="form-label"><strong>Articulo:</strong></label>
+                    <div class="input-group">
+                <InputSelect @bind-Value="Trabajo.TrabajoId" class="form-control form-select">
+                    <option value="0" selected diabled>Seleccione un Articulo</option>
+                            @foreach (var articulo in ListaArticulos)
+                            {
+                            <option value="@Articulo.ArticuloId">@Articulo.Descripcion</option>
+                            }
+                </InputSelect>
+                <button type="button" class="btn btn-outline-success bi bi-arrow-clockwise" @onclick="BuscarArticulosPendientes">Buscar</button>
+            </div>
+                        <ValidationMessage For="(() => Articulo.ArticuloId)" />
+                </div>
 
             <!-- ClienteId (Cargar desde Clientes) -->
             <div class="mb-3">
@@ -82,6 +99,7 @@
             </div>
         </div>
     </div>
+     </div>
 </EditForm>
 
 @code {

@@ -1,0 +1,48 @@
+﻿<div class="col-auto input-group align-items-center">
+    <label class="col-form-label input-group-text">Seleccione:</label>
+
+    <InputSelect class="form-control form-select" @bind-Value="ArticuloId">
+        <option value="0">-- Seleccione un Articulo --</option>
+        @foreach (var articulo in Articulos)
+        {
+            <option value="@articulo.ArticuloId">@articulo.ArticuloId - @articulo.Descripcion ($@articulo.Precio.ToString("N2"))</option>
+        }
+    </InputSelect>
+    <label class="col-form-label input-group-text">Valor:</label>
+    <InputNumber class="form-control" id="quantity-input" @bind-Value="Valor" min="0" />
+
+    <button type="button" class="btn btn-outline-success bi bi-plus" @onclick="TriggerSelection">Agregar</button>
+</div>
+@if (ErrorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ErrorMessage
+    </div>
+}
+
+@code {
+    [Parameter]
+    public List<Articulos> Articulos { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<(Articulos Articulo, double Quantity)> OnArticuloSelected { get; set; }
+
+    [Parameter]
+    public int ArticuloId { get; set; }
+
+    [Parameter]
+    public double Valor { get; set; }
+
+    private string? ErrorMessage { get; set; } = null;
+
+    private async Task TriggerSelection()
+    {
+        ErrorMessage = null;
+        if (ArticuloId > 0)
+        {
+            var articuloSeleccionado = Articulos.Single(a => a.ArticuloId == ArticuloId);
+
+            await OnArticuloSelected.InvokeAsync((articuloSeleccionado, Valor));
+        }
+    }
+}
