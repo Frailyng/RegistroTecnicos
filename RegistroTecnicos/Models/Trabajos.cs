@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RegistroTecnicos.Models
 {
@@ -9,6 +10,8 @@ namespace RegistroTecnicos.Models
 
         [Required(ErrorMessage = "El campo Fecha es obligatorio")]
         public DateTime? Fecha { get; set; }
+
+        public int ArticuloId { get; set; }
 
         [Required(ErrorMessage = "El campo ClienteId es obligatorio")]
         public int ClienteId { get; set; }
@@ -24,5 +27,10 @@ namespace RegistroTecnicos.Models
         [Required(ErrorMessage = "El campo Prioridad es obligatorio")]
         public int PrioridadId { get; set; } 
         public virtual Prioridades? Prioridad { get; set; } 
+
+        public ICollection<TrabajosDetalle> TrabajosDetalle {  get; set; } = new List<TrabajosDetalle>();
+
+        [ForeignKey("ArticuloId")]
+        public virtual Articulos Articulo { get; set; }
     }
 }
