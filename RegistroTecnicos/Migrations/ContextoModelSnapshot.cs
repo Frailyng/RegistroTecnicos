@@ -163,8 +163,8 @@ namespace RegistroTecnicos.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal?>("Monto")
-                        .HasColumnType("TEXT");
+                    b.Property<double>("Monto")
+                        .HasColumnType("REAL");
 
                     b.Property<int>("PrioridadId")
                         .HasColumnType("INTEGER");

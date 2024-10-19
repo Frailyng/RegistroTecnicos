@@ -22,7 +22,7 @@ namespace RegistroTecnicos.Models
         public virtual Tecnicos? Tecnico { get; set; }
 
         public string? Descripcion { get; set; }
-        public decimal? Monto { get; set; }
+        public double Monto { get; set; }
 
         [Required(ErrorMessage = "El campo Prioridad es obligatorio")]
         public int PrioridadId { get; set; } 

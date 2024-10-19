@@ -97,7 +97,7 @@ namespace RegistroTecnicos.Migrations
                     ClienteId = table.Column<int>(type: "INTEGER", nullable: false),
                     TecnicoId = table.Column<int>(type: "INTEGER", nullable: false),
                     Descripcion = table.Column<string>(type: "TEXT", nullable: true),
-                    Monto = table.Column<decimal>(type: "TEXT", nullable: true),
+                    Monto = table.Column<double>(type: "REAL", nullable: false),
                     PrioridadId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
