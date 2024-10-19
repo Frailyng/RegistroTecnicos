@@ -28,6 +28,12 @@ public class TrabajosService(Contexto contexto)
             var trabajo = await contexto.Trabajos.SingleAsync(t => t.TrabajoId == item.TrabajoId);
         }
     }
+
+    public async Task<bool> Modificar(Trabajos Trabajos)
+    {
+        contexto.Update(Trabajos);
+        return await contexto.SaveChangesAsync() > 0;
+    }
     public async Task<bool> Guardar(Trabajos Trabajos)
     {
         if (!await Existe(Trabajos.TrabajoId))
@@ -36,47 +42,25 @@ public class TrabajosService(Contexto contexto)
             return await Modificar(Trabajos);
     }
 
-   
-
-    private async Task <bool> Modificar(Trabajos Trabajos)
-    {
-        contexto.Update(Trabajos);
-        return await contexto.SaveChangesAsync() > 0;
-    }
-
-   
-
-    public async Task<bool> Existe(DateTime? Fecha,  int? TrabajoId = null)
+    public async Task<Trabajos> Buscar(int id)
     {
         return await contexto.Trabajos
-            .AnyAsync(p => p.Fecha == Fecha);
-    }
-
-    public async Task<bool> Existe(int TrabajoId, DateTime? Fecha)
-    {
-        return await contexto.Trabajos
-            .AnyAsync(p => p.TrabajoId != TrabajoId && p.Fecha.Equals(Fecha));
-    }
-
-    public async Task<bool> Eliminar(int id)
-    {
-        var trabajosEliminados = await contexto.Trabajos
-            .Where(p => p.TrabajoId == id)
-            .ExecuteDeleteAsync();
-        return trabajosEliminados > 0;
-    }
-
-
-    public async Task<Trabajos?> Buscar(int id)
-    {
-        return await contexto.Trabajos
-            .Include(t => t.Cliente)   
-            .Include(t => t.Tecnico) 
+            .Include(t => t.Cliente)
+            .Include(t => t.Tecnico)
             .Include(t => t.Prioridad)
+            .Include(t => t.Articulo)
+            .Include(t => t.TrabajosDetalle)
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.TrabajoId == id);
     }
 
+    public async Task<bool> Eliminar(int id)
+    {
+        return await contexto.Trabajos.Include(t => t.TrabajosDetalle)
+            .Where(p => p.TrabajoId == id)
+            .ExecuteDeleteAsync() > 0;
+   
+    }
 
     public async Task<List<Trabajos>> Listar(Expression<Func<Trabajos, bool>> criterio)
     {
@@ -84,10 +68,11 @@ public class TrabajosService(Contexto contexto)
             .Include(t => t.Cliente)
             .Include(t => t.Tecnico)
             .Include(t => t.Prioridad)
+            .Include(t => t.Articulo)
+            .Include(t => t.TrabajosDetalle)
             .AsNoTracking()
             .Where(criterio)
             .ToListAsync();
     }
-
 
 }
