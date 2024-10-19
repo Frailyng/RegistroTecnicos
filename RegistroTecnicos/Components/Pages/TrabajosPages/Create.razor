@@ -180,25 +180,39 @@
         await Task.CompletedTask;
     }
 
-    private double MontoTotal => Trabajo.Total + Trabajo.TrabajosDetalle.Sum(d => d.Precio);
+    public double MontoTotal => Trabajo.Total + Trabajo.TrabajosDetalle.Sum(d => d.Precio);
 
-    private async Task Guardar()
-    {
-        try
+   
+        public async Task Guardar()
         {
-            var guardo = await TrabajosService.Guardar(Trabajo);
-
-            if (guardo)
+            try
             {
-                navigationManager.NavigateTo("/Trabajos/Index");
+                // Crear una copia del trabajo sin los detalles
+                var trabajoSinDetalles = new Trabajos
+                    {
+                        TrabajoId = Trabajo.TrabajoId,
+                        Fecha = Trabajo.Fecha,
+                        ClienteId = Trabajo.ClienteId,
+                        TecnicoId = Trabajo.TecnicoId,
+                        Descripcion = Trabajo.Descripcion,
+                        Total = MontoTotal,
+                        PrioridadId = Trabajo.PrioridadId
+                    };
+
+                var guardo = await TrabajosService.Guardar(trabajoSinDetalles);
+
+                if (guardo)
+                {
+                    navigationManager.NavigateTo("/Trabajos/Index");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejar la excepción, por ejemplo, mostrando un mensaje de error
+                await JSRuntime.InvokeVoidAsync("alert", $"Ocurrió un error al guardar el trabajo: {ex.Message}");
             }
         }
-        catch (Exception ex)
-        {
-            // Manejar la excepción, por ejemplo, mostrando un mensaje de error
-            await JSRuntime.InvokeVoidAsync("alert", $"Ocurrió un error al guardar el trabajo: {ex.Message}");
-        }
-    }
+
 
 
     public void RemoverDetalle(TrabajosDetalle detalle)
