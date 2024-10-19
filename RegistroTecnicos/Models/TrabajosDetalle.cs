@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RegistroTecnicos.Models;
 
-public class TrabajosDetalle
+public partial class TrabajosDetalle
 {
     [Key]
     public int DetalleId { get; set; }
