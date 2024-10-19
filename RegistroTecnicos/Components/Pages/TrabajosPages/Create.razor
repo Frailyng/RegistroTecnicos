@@ -154,9 +154,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-       
+
         Trabajo.Fecha = DateTime.Today;
 
+        Trabajo.TrabajosDetalle = new List<TrabajosDetalle>();
         ListaArticulos = await ArticulosService.Listar(a => true);
         ListaClientes = await ClientesServices.ObtenerListaClientes();
         ListaTecnicos = await TecnicoService.ObtenerListaTecnicos();
@@ -184,12 +185,10 @@
 
     public double MontoTotal => Trabajo.Total + Trabajo.TrabajosDetalle.Sum(d => d.Precio);
 
-   
     public async Task Guardar()
     {
         try
         {
-            // Crear una nueva instancia de Trabajos con detalles
             var trabajoSinDetalles = new Trabajos
                 {
                     TrabajoId = Trabajo.TrabajoId,
@@ -198,7 +197,7 @@
                     TecnicoId = Trabajo.TecnicoId,
                     Descripcion = Trabajo.Descripcion,
                     Total = MontoTotal,
-                    PrioridadId = Trabajo.PrioridadId,
+                    PrioridadId = Trabajo.PrioridadId
                 };
 
             var guardo = await TrabajosService.Guardar(trabajoSinDetalles);
@@ -214,7 +213,6 @@
             await JSRuntime.InvokeVoidAsync("alert", $"Ocurrió un error al guardar el trabajo: {ex.Message}");
         }
     }
-
 
 
     public void RemoverDetalle(TrabajosDetalle detalle)
