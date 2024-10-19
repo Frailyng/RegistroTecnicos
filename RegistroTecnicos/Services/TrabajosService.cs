@@ -5,20 +5,25 @@ using RegistroTecnicos.Models;
 
 namespace RegistroTecnicos.Services;
 
-public class TrabajosService(Contexto contexto)
+public class TrabajosService
 {
-    public async Task<bool> Existe(int TrabajoId)
+    private readonly Contexto contexto;
+
+    public TrabajosService(Contexto contexto)
     {
-        return await contexto.Trabajos
-            .AnyAsync(p => p.TrabajoId == TrabajoId);
+        this.contexto = contexto;
     }
 
-    public async Task<bool> Insertar(Trabajos Trabajos)
+    public async Task<bool> Existe(int trabajoId)
     {
-        contexto.Trabajos.Add(Trabajos);
-        await AfectarTrabajos(Trabajos.TrabajosDetalle.ToArray());
-         return await contexto.SaveChangesAsync() > 0;
+        return await contexto.Trabajos.AnyAsync(t => t.TrabajoId == trabajoId);
+    }
 
+    public async Task<bool> Insertar(Trabajos trabajo)
+    {
+        contexto.Trabajos.Add(trabajo);
+        await AfectarTrabajos(trabajo.TrabajosDetalle.ToArray());
+        return await contexto.SaveChangesAsync() > 0;
     }
 
     public async Task AfectarTrabajos(TrabajosDetalle[] detalle)
@@ -29,17 +34,23 @@ public class TrabajosService(Contexto contexto)
         }
     }
 
-    public async Task<bool> Modificar(Trabajos Trabajos)
+    public async Task<bool> Modificar(Trabajos trabajo)
     {
-        contexto.Update(Trabajos);
+        contexto.Update(trabajo);
+        await AfectarTrabajos(trabajo.TrabajosDetalle.ToArray());
         return await contexto.SaveChangesAsync() > 0;
     }
-    public async Task<bool> Guardar(Trabajos Trabajos)
+
+    public async Task<bool> Guardar(Trabajos trabajo)
     {
-        if (!await Existe(Trabajos.TrabajoId))
-            return await Insertar(Trabajos);
+        if (!await Existe(trabajo.TrabajoId))
+        {
+            return await Insertar(trabajo);
+        }
         else
-            return await Modificar(Trabajos);
+        {
+            return await Modificar(trabajo);
+        }
     }
 
     public async Task<Trabajos> Buscar(int id)
@@ -48,18 +59,17 @@ public class TrabajosService(Contexto contexto)
             .Include(t => t.Cliente)
             .Include(t => t.Tecnico)
             .Include(t => t.Prioridad)
-            .Include(t => t.Articulo)
             .Include(t => t.TrabajosDetalle)
             .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.TrabajoId == id);
+            .FirstOrDefaultAsync(t => t.TrabajoId == id);
     }
 
     public async Task<bool> Eliminar(int id)
     {
-        return await contexto.Trabajos.Include(t => t.TrabajosDetalle)
-            .Where(p => p.TrabajoId == id)
+        return await contexto.Trabajos
+            .Include(t => t.TrabajosDetalle)
+            .Where(t => t.TrabajoId == id)
             .ExecuteDeleteAsync() > 0;
-   
     }
 
     public async Task<List<Trabajos>> Listar(Expression<Func<Trabajos, bool>> criterio)
@@ -68,11 +78,10 @@ public class TrabajosService(Contexto contexto)
             .Include(t => t.Cliente)
             .Include(t => t.Tecnico)
             .Include(t => t.Prioridad)
-            .Include(t => t.Articulo)
             .Include(t => t.TrabajosDetalle)
             .AsNoTracking()
             .Where(criterio)
             .ToListAsync();
     }
-
 }
+

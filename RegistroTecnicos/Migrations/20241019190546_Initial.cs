@@ -93,22 +93,21 @@ namespace RegistroTecnicos.Migrations
                     TrabajoId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ArticuloId = table.Column<int>(type: "INTEGER", nullable: false),
                     ClienteId = table.Column<int>(type: "INTEGER", nullable: false),
                     TecnicoId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Descripcion = table.Column<string>(type: "TEXT", nullable: true),
-                    Monto = table.Column<double>(type: "REAL", nullable: false),
-                    PrioridadId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Descripcion = table.Column<string>(type: "TEXT", nullable: false),
+                    Total = table.Column<double>(type: "REAL", nullable: false),
+                    PrioridadId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ArticulosArticuloId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Trabajos", x => x.TrabajoId);
                     table.ForeignKey(
-                        name: "FK_Trabajos_Articulos_ArticuloId",
-                        column: x => x.ArticuloId,
+                        name: "FK_Trabajos_Articulos_ArticulosArticuloId",
+                        column: x => x.ArticulosArticuloId,
                         principalTable: "Articulos",
-                        principalColumn: "ArticuloId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ArticuloId");
                     table.ForeignKey(
                         name: "FK_Trabajos_Clientes_ClienteId",
                         column: x => x.ClienteId,
@@ -138,8 +137,7 @@ namespace RegistroTecnicos.Migrations
                     TrabajoId = table.Column<int>(type: "INTEGER", nullable: false),
                     ArticuloId = table.Column<int>(type: "INTEGER", nullable: false),
                     Cantidad = table.Column<int>(type: "INTEGER", nullable: false),
-                    Precio = table.Column<double>(type: "REAL", nullable: false),
-                    Costo = table.Column<double>(type: "REAL", nullable: false)
+                    Precio = table.Column<double>(type: "REAL", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -163,9 +161,9 @@ namespace RegistroTecnicos.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Trabajos_ArticuloId",
+                name: "IX_Trabajos_ArticulosArticuloId",
                 table: "Trabajos",
-                column: "ArticuloId");
+                column: "ArticulosArticuloId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Trabajos_ClienteId",

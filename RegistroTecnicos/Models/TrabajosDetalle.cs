@@ -16,8 +16,6 @@ public partial class TrabajosDetalle
 
     public double Precio { get; set; }
 
-    public double Costo { get; set; }
-
     [ForeignKey("TrabajoId")]
     public virtual Trabajos Trabajo { get; set; } = null!;
 

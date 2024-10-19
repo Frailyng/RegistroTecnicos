@@ -34,8 +34,8 @@
                                                 <ul class="list-unstyled">
                                                     <li><strong>TrabajoId:</strong> @trabajo.TrabajoId</li>
                                                     <li><strong>Descripción:</strong> @trabajo.Descripcion</li>
-                                                    <li><strong>Fecha:</strong> @trabajo.Fecha?.ToShortDateString()</li>
-                                                    <li><strong>Monto:</strong> @trabajo.Monto</li>
+                                                    <li><strong>Fecha:</strong> @trabajo.Fecha.ToShortDateString()</li>
+                                                    <li><strong>Monto:</strong> @trabajo.Total</li>
                                                     <li><strong>Cliente:</strong> @trabajo.Cliente?.Nombres</li>
                                                     <li><strong>Técnico:</strong> @trabajo.Tecnico?.Nombres</li>
                                                 </ul>

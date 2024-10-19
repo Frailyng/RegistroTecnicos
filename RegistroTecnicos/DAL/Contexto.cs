@@ -29,10 +29,17 @@ public class Contexto : DbContext
             .WithMany(c => c.Trabajos)
             .HasForeignKey(t => t.ClienteId);
 
+
         modelBuilder.Entity<Trabajos>()
             .HasOne(t => t.Tecnico)
             .WithMany(te => te.Trabajos)
             .HasForeignKey(t => t.TecnicoId);
+
+        modelBuilder.Entity<TrabajosDetalle>()
+            .HasOne(td => td.Trabajo)
+            .WithMany(t => t.TrabajosDetalle)
+            .HasForeignKey(td => td.TrabajoId);
+
 
         modelBuilder.Entity<Articulos>().HasData(new List<Articulos>()
         {

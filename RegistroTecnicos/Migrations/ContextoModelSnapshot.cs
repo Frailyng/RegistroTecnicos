@@ -150,21 +150,18 @@ namespace RegistroTecnicos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ArticuloId")
+                    b.Property<int?>("ArticulosArticuloId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ClienteId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Descripcion")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("Fecha")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<double>("Monto")
-                        .HasColumnType("REAL");
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("PrioridadId")
                         .HasColumnType("INTEGER");
@@ -172,9 +169,12 @@ namespace RegistroTecnicos.Migrations
                     b.Property<int>("TecnicoId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<double>("Total")
+                        .HasColumnType("REAL");
+
                     b.HasKey("TrabajoId");
 
-                    b.HasIndex("ArticuloId");
+                    b.HasIndex("ArticulosArticuloId");
 
                     b.HasIndex("ClienteId");
 
@@ -197,9 +197,6 @@ namespace RegistroTecnicos.Migrations
                     b.Property<int>("Cantidad")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("Costo")
-                        .HasColumnType("REAL");
-
                     b.Property<double>("Precio")
                         .HasColumnType("REAL");
 
@@ -215,11 +212,9 @@ namespace RegistroTecnicos.Migrations
 
             modelBuilder.Entity("RegistroTecnicos.Models.Trabajos", b =>
                 {
-                    b.HasOne("RegistroTecnicos.Models.Articulos", "Articulo")
+                    b.HasOne("RegistroTecnicos.Models.Articulos", null)
                         .WithMany("Trabajos")
-                        .HasForeignKey("ArticuloId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ArticulosArticuloId");
 
                     b.HasOne("RegistroTecnicos.Models.Clientes", "Cliente")
                         .WithMany("Trabajos")
@@ -238,8 +233,6 @@ namespace RegistroTecnicos.Migrations
                         .HasForeignKey("TecnicoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Articulo");
 
                     b.Navigation("Cliente");
 

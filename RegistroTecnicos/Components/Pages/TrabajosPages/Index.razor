@@ -14,8 +14,6 @@
                 <label for="Filtro" class="form-label">Filtrar por:</label>
                 <select @bind="filtro" class="form-select">
                     <option value="Id">TrabajoId</option>
-                    <option value="ClienteId">ClienteId</option>
-                    <option value="TecnicoId">TecnicoId</option>
                     <option value="NombreCliente">Nombre del Cliente</option>
                     <option value="NombreTecnico">Nombre del Técnico</option>
                     <option value="Fecha">Fecha</option>
@@ -51,10 +49,7 @@
             <tr>
                 <th>TrabajoId</th>
                 <th>Fecha</th>
-                <th>Articulo</th>
-                <th>ClienteId</th>
                 <th>Nombre del Cliente</th>
-                <th>TecnicoId</th>
                 <th>Nombre del Técnico</th>
                 <th>Descripción</th>
                 <th>Monto</th>
@@ -69,14 +64,11 @@
             {
                 <tr>
                     <td>@trabajo.TrabajoId</td>
-                    <td>@trabajo.Fecha?.ToShortDateString()</td>
-                    <td>@trabajo.Articulo.Descripcion</td>
-                    <td>@trabajo.ClienteId</td>
+                    <td>@trabajo.Fecha.ToShortDateString()</td>
                     <td>@trabajo.Cliente?.Nombres</td>
-                    <td>@trabajo.TecnicoId</td>
                     <td>@trabajo.Tecnico?.Nombres</td>
                     <td>@trabajo.Descripcion</td>
-                    <td>@trabajo.Monto</td>
+                    <td>@trabajo.Total</td>
                     <td>@trabajo.Prioridad?.Descripcion</td>
                     <td>
                         <a class="btn btn-outline-primary" href="/Trabajos/Details/@trabajo.TrabajoId">
@@ -129,18 +121,6 @@
             {
                 ListaTrabajos = await TrabajosService.Listar(p => p.TrabajoId == trabajoId);
             }
-            else if (filtro == "Articulo")
-            {
-                ListaTrabajos = await TrabajosService.Listar(t => t.TrabajoId > 0);
-            }
-            else if (filtro == "ClienteId" && int.TryParse(valorFiltro, out int clienteId))
-            {
-                ListaTrabajos = await TrabajosService.Listar(p => p.ClienteId == clienteId);
-            }
-            else if (filtro == "TecnicoId" && int.TryParse(valorFiltro, out int tecnicoId))
-            {
-                ListaTrabajos = await TrabajosService.Listar(p => p.TecnicoId == tecnicoId);
-            }
             else if (filtro == "NombreCliente")
             {
                 ListaTrabajos = await TrabajosService.Listar(p => p.Cliente != null && p.Cliente.Nombres.Contains(valorFiltro));
@@ -151,7 +131,7 @@
             }
             else if (filtro == "Fecha" && DateTime.TryParse(valorFiltro, out DateTime fecha))
             {
-                ListaTrabajos = await TrabajosService.Listar(p => p.Fecha.Value.Date == fecha.Date);
+                ListaTrabajos = await TrabajosService.Listar(p => p.Fecha.Date == fecha.Date);
             }
             else if (filtro == "Prioridad")
             {
