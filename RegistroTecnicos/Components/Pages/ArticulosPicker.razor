@@ -1,5 +1,4 @@
 ﻿<div class="col-auto input-group align-items-center">
-    <label class="col-form-label input-group-text">Seleccione:</label>
 
     <InputSelect class="form-control form-select" @bind-Value="ArticuloId">
         <option value="0">-- Seleccione un Articulo --</option>
@@ -27,13 +26,13 @@
     public List<Articulos> Articulos { get; set; } = [];
 
     [Parameter]
-    public EventCallback<(Articulos Articulo, double Quantity)> OnArticuloSelected { get; set; }
+    public EventCallback<(Articulos Articulo, int Quantity, double Quantitys)> OnArticuloSelected { get; set; }
 
     [Parameter]
     public int ArticuloId { get; set; }
 
     [Parameter]
-    public double Cantidad { get; set; }
+    public int Cantidad { get; set; }
 
     [Parameter]
     public double Precio { get; set; }
@@ -46,8 +45,7 @@
         if (ArticuloId > 0)
         {
             var articuloSeleccionado = Articulos.Single(a => a.ArticuloId == ArticuloId);
-            await OnArticuloSelected.InvokeAsync((articuloSeleccionado, Cantidad));
-            await OnArticuloSelected.InvokeAsync((articuloSeleccionado, Precio));
+            await OnArticuloSelected.InvokeAsync((articuloSeleccionado, Cantidad, Precio));
         }
     }
 }

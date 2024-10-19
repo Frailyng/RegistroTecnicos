@@ -171,12 +171,13 @@
         ListaPrioridades = await PrioridadesService.ObtenerListaPrioridades(); 
     }
 
-    private async Task HandleArticuloSelected((Articulos articulos, double valor) selection)
+    private async Task HandleArticuloSelected((Articulos articulos, int cantidad, double precio) selection)
     {
         var detalle = new TrabajosDetalle
             {
                 ArticuloId = selection.articulos.ArticuloId,
-                Precio = selection.valor
+                Cantidad = selection.cantidad,
+                Precio = selection.precio
             };
 
         Trabajo.TrabajosDetalle.Add(detalle);
