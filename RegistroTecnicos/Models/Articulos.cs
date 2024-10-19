@@ -17,4 +17,6 @@ public class Articulos
     public double Precio { get; set; }
 
     public int Existencia { get; set; }
+
+    public virtual ICollection<Trabajos> Trabajos { get; set; } = new List<Trabajos>();
 }
