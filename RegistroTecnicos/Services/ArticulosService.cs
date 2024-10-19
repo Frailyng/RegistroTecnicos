@@ -14,4 +14,12 @@ public partial class ArticulosService(Contexto contexto)
             .AsNoTracking()
             .ToListAsync();
     }
+
+    public async Task <List<Articulos>> GetArticulosPendientes(int articuloId)
+    {
+        return await contexto.Articulos
+            .Where(a => a.ArticuloId == articuloId)
+            .AsNoTracking()
+            .ToListAsync();
+    }
 }

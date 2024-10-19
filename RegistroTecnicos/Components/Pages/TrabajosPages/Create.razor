@@ -3,6 +3,7 @@
 @inject ClientesServices ClientesServices
 @inject TecnicoService TecnicoService
 @inject PrioridadesService PrioridadesService
+@inject ArticulosService ArticulosService
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
@@ -97,13 +98,68 @@
                 <button type="submit" class="btn btn-primary">Guardar</button>
                 <a href="/Trabajos/Index" class="btn btn-secondary">Cancelar</a>
             </div>
+
+        @* Detalles del Trabajo *@
+                <div class="border border-success p-3 mt-3">
+                    <h5>Detalles del Trabajo</h5>
+
+                    <PrestamoPicker Articulos="ListaArticulos"
+                                    ArticuloId="DetalleSeleccionado.ArticuloId"
+                                    Descripcion="DetalleSeleccionado.Descripcion"
+                                    Precio="DetalleSeleccionado.Precio"
+                                    OnArticuloSelected="HandleArticuloSelected" />
+                    <hr />
+                    <table class="table table-light">
+                        <thead class="table table-striped">
+                            <tr class="Text-center">
+                                <td>Articulo</td>
+                                <td>Cobrado</td>
+                                <td>Remover</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var detalle in Trabajo.TrabajosDetalle)
+                            {
+                            <tr> 
+                            <td>@detalle.ArticuloId</td>
+                             <td>@detalle.Precio</td>
+                              <td>
+                    <button type="button" class="btn btn-outline-danger bi bi-trash"
+                            @onclick="() => RemoverDetalle(detalle)"></button>
+                </td>
+                        </tr> 
+                            }
+                    </tbody>
+
+                    </table>
+                    <hr />
+                </div>
+                @* Monto *@
+                <div class="row">
+                    <div class="col-6 offset-6">
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Monto</strong></label>
+                            <label class="form-control text-end"><strong>@Trabajo.Monto</strong></label>
+
+                            <ValidationMessage For="(() => Trabajo.Monto)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* footer *@
+            <div class="card-footer text-center mt-2">
+                <a href="/Trabajos/Index" class="btn btn-secondary"> <span class="bi bi-arrow-left"></span> Volver</a>
+                <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
+            </div>
         </div>
     </div>
-     </div>
 </EditForm>
 
 @code {
     private Trabajos Trabajo = new Trabajos();
+    public TrabajosDetalle DetalleSeleccionado { get; set; } = new();
+    public List<Articulos> ListaArticulos { get; set; } = [];
     private List<Clientes> ListaClientes = new List<Clientes>();
     private List<Tecnicos> ListaTecnicos = new List<Tecnicos>();
     private List<Prioridades> ListaPrioridades = new List<Prioridades>();
@@ -112,10 +168,15 @@
     {
         // Asignar la fecha actual
         Trabajo.Fecha = DateTime.Today;
-
+        ListaArticulos = await ArticulosService.Listar(a => true);
         ListaClientes = await ClientesServices.ObtenerListaClientes();
         ListaTecnicos = await TecnicoService.ObtenerListaTecnicos();
         ListaPrioridades = await PrioridadesService.ObtenerListaPrioridades(); 
+    }
+
+    public async Task BuscarArticulosPendientes()
+    {
+        ListaArticulos = await ArticulosService.Listar(Trabajo.ArticuloId);
     }
 
     private async Task Guardar()
