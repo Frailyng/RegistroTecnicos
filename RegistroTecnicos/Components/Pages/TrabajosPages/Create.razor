@@ -37,7 +37,6 @@
                                 <option value="@articulo.ArticuloId">@articulo.Descripcion</option>
                             }
                 </InputSelect>
-                <button type="button" class="btn btn-outline-success bi bi-arrow-clockwise" @onclick="BuscarArticulosPendientes">Buscar</button>
             </div>
                         <ValidationMessage For="(() => Trabajo.ArticuloId)" />
                 </div>
@@ -45,7 +44,7 @@
             <!-- ClienteId (Cargar desde Clientes) -->
             <div class="mb-3">
                 <label for="ClienteId" class="form-label">Cliente:</label>
-                <InputSelect @bind-Value="Trabajo.ClienteId" class="form-control">
+                <InputSelect @bind-Value="Trabajo.ClienteId" class="form-control form-select">
                     <option value="">Seleccione un cliente</option>
                     @foreach (var cliente in ListaClientes)
                     {
@@ -58,7 +57,7 @@
             <!-- TecnicoId (Cargar desde Técnicos) -->
             <div class="mb-3">
                 <label for="TecnicoId" class="form-label">Técnico:</label>
-                <InputSelect @bind-Value="Trabajo.TecnicoId" class="form-control">
+                <InputSelect @bind-Value="Trabajo.TecnicoId" class="form-control form-select">
                     <option value="">Seleccione un técnico</option>
                     @foreach (var tecnico in ListaTecnicos)
                     {
@@ -71,21 +70,21 @@
             <!-- Descripción -->
             <div class="mb-3">
                 <label for="Descripcion" class="form-label">Descripción:</label>
-                <InputText @bind-Value="Trabajo.Descripcion" class="form-control" />
+                <InputText @bind-Value="Trabajo.Descripcion" class="form-control form-select" />
                 <ValidationMessage For="@(() => Trabajo.Descripcion)" />
             </div>
 
             <!-- Monto -->
             <div class="mb-3">
                 <label for="Monto" class="form-label">Monto:</label>
-                <InputNumber @bind-Value="Trabajo.Monto" class="form-control" />
+                <InputNumber @bind-Value="Trabajo.Monto" class="form-control form-select" />
                 <ValidationMessage For="@(() => Trabajo.Monto)" />
             </div>
 
             <!-- Prioridad (Cargar desde Prioridades) -->
             <div class="mb-3">
                 <label for="PrioridadId" class="form-label">Prioridad:</label>
-                <InputSelect @bind-Value="Trabajo.PrioridadId" class="form-control">
+                <InputSelect @bind-Value="Trabajo.PrioridadId" class="form-control form-select">
                     <option value="">Seleccione una prioridad</option>
                     @foreach (var prioridad in ListaPrioridades)
                     {
@@ -93,11 +92,6 @@
                     }
                 </InputSelect>
                 <ValidationMessage For="@(() => Trabajo.PrioridadId)" />
-            </div>
-
-            <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary">Guardar</button>
-                <a href="/Trabajos/Index" class="btn btn-secondary">Cancelar</a>
             </div>
 
         @* Detalles del Trabajo *@
@@ -172,11 +166,6 @@
         ListaClientes = await ClientesServices.ObtenerListaClientes();
         ListaTecnicos = await TecnicoService.ObtenerListaTecnicos();
         ListaPrioridades = await PrioridadesService.ObtenerListaPrioridades(); 
-    }
-
-    public async Task BuscarArticulosPendientes()
-    {
-        ListaArticulos = await ArticulosService.GetArticulosPendientes(Trabajo.ArticuloId);
     }
 
     private async Task HandleArticuloSelected((Articulos articulos, double valor) selection)
