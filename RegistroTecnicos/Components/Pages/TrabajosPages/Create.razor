@@ -26,21 +26,6 @@
                 <ValidationMessage For="@(() => Trabajo.Fecha)" />
             </div>
 
-             <!-- Articulo -->
-            <div class="mb-3">
-                <label for="ArticuloId" class="form-label"><strong>Articulo:</strong></label>
-                    <div class="input-group">
-                <InputSelect @bind-Value="Trabajo.TrabajoId" class="form-control form-select">
-                    <option value="0" selected diabled>Seleccione un Articulo</option>
-                            @foreach (var articulo in ListaArticulos)
-                            {
-                                <option value="@articulo.ArticuloId">@articulo.Descripcion</option>
-                            }
-                </InputSelect>
-            </div>
-                        <ValidationMessage For="(() => Trabajo.ArticuloId)" />
-                </div>
-
             <!-- ClienteId (Cargar desde Clientes) -->
             <div class="mb-3">
                 <label for="ClienteId" class="form-label">Cliente:</label>
