@@ -7,6 +7,7 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
+<PageTitle>Create</PageTitle>
 <EditForm Model="Trabajo" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -33,12 +34,12 @@
                     <option value="0" selected diabled>Seleccione un Articulo</option>
                             @foreach (var articulo in ListaArticulos)
                             {
-                            <option value="@Articulo.ArticuloId">@Articulo.Descripcion</option>
+                                <option value="@articulo.ArticuloId">@articulo.Descripcion</option>
                             }
                 </InputSelect>
                 <button type="button" class="btn btn-outline-success bi bi-arrow-clockwise" @onclick="BuscarArticulosPendientes">Buscar</button>
             </div>
-                        <ValidationMessage For="(() => Articulo.ArticuloId)" />
+                        <ValidationMessage For="(() => Trabajo.ArticuloId)" />
                 </div>
 
             <!-- ClienteId (Cargar desde Clientes) -->
@@ -103,10 +104,9 @@
                 <div class="border border-success p-3 mt-3">
                     <h5>Detalles del Trabajo</h5>
 
-                    <PrestamoPicker Articulos="ListaArticulos"
+                    <ArticulosPicker Articulos="ListaArticulos"
                                     ArticuloId="DetalleSeleccionado.ArticuloId"
-                                    Descripcion="DetalleSeleccionado.Descripcion"
-                                    Precio="DetalleSeleccionado.Precio"
+                                     Valor="DetalleSeleccionado.Precio"
                                     OnArticuloSelected="HandleArticuloSelected" />
                     <hr />
                     <table class="table table-light">
@@ -176,7 +176,22 @@
 
     public async Task BuscarArticulosPendientes()
     {
-        ListaArticulos = await ArticulosService.Listar(Trabajo.ArticuloId);
+        ListaArticulos = await ArticulosService.GetArticulosPendientes(Trabajo.ArticuloId);
+    }
+
+    private async Task HandleArticuloSelected((Articulos articulos, double valor) selection)
+    {
+        var detalle = new TrabajosDetalle
+            {
+                ArticuloId = selection.articulos.ArticuloId,
+                Precio = selection.valor
+            };
+
+        Trabajo.TrabajosDetalle.Add(detalle);
+
+        DetalleSeleccionado = new TrabajosDetalle();
+        await Task.CompletedTask;
+
     }
 
     private async Task Guardar()
@@ -191,5 +206,11 @@
             // Aquí puedes manejar errores si ocurre algún problema al guardar
             await JSRuntime.InvokeVoidAsync("alert", "Error al guardar el trabajo");
         }
+    }
+
+    public void RemoverDetalle(TrabajosDetalle detalle)
+    {
+        Trabajo.TrabajosDetalle.Remove(detalle);
+        DetalleSeleccionado = detalle;
     }
 }
