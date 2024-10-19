@@ -16,6 +16,8 @@ public class Contexto : DbContext
 
     public DbSet<Articulos> Articulos { get; set; }
 
+    public DbSet<TrabajosDetalle> TrabajosDetalle { get; set; }
+
     // Configuración de relaciones si es necesario
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
