@@ -79,43 +79,43 @@
                 <ValidationMessage For="@(() => Trabajo.PrioridadId)" />
             </div>
 
-        @* Detalles del Trabajo *@
+                @* Detalles del Trabajo *@
                 <div class="border border-success p-3 mt-3">
                     <h5>Detalles de Articulos Utilizados</h5>
 
                     <ArticulosPicker Articulos="ListaArticulos"
-                                    ArticuloId="DetalleSeleccionado.ArticuloId"
-                                    Cantidad="DetalleSeleccionado.Cantidad"
+                                     ArticuloId="DetalleSeleccionado.ArticuloId"
+                                     Cantidad="DetalleSeleccionado.Cantidad"
                                      Precio="DetalleSeleccionado.Precio"
-                                    OnArticuloSelected="HandleArticuloSelected" />
+                                     OnArticuloSelected="HandleArticuloSelected" />
                     <hr />
                     <table class="table table-light">
                         <thead class="table table-striped">
                             <tr class="Text-center">
                                 <td>Articulo</td>
                                 <td>Cantidad</td>
-                                <td>Precio</td>
+                                <td>Precio Total</td>
                                 <td>Remover</td>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var detalle in Trabajo.TrabajosDetalle)
                             {
-                            <tr> 
-                            <td>@detalle.ArticuloId</td>
-                                 <td>@detalle.Cantidad</td>
-                             <td>@detalle.Precio</td>
-                              <td>
-                    <button type="button" class="btn btn-outline-danger bi bi-trash"
-                            @onclick="() => RemoverDetalle(detalle)"></button>
-                </td>
-                        </tr> 
+                    <tr>
+                        <td>@detalle.ArticuloId</td>
+                        <td>@detalle.Cantidad</td>
+                        <td>@detalle.Precio</td>
+                        <td>
+                            <button type="button" class="btn btn-outline-danger bi bi-trash"
+                                    @onclick="() => RemoverDetalle(detalle)"></button>
+                        </td>
+                    </tr>
                             }
-                    </tbody>
-
+                        </tbody>
                     </table>
                     <hr />
                 </div>
+
                 @* Monto *@
                 <div class="row">
                     <div class="col-6 offset-6">
@@ -158,18 +158,23 @@
 
     private async Task HandleArticuloSelected((Articulos articulos, int cantidad, double precio) selection)
     {
+
+        double precioTotal = selection.cantidad * selection.articulos.Precio;
+
         var detalle = new TrabajosDetalle
             {
                 ArticuloId = selection.articulos.ArticuloId,
                 Cantidad = selection.cantidad,
-                Precio = selection.precio
+                Precio = precioTotal 
             };
 
+      
         Trabajo.TrabajosDetalle.Add(detalle);
 
+        
         DetalleSeleccionado = new TrabajosDetalle();
-        await Task.CompletedTask;
 
+        await Task.CompletedTask;
     }
 
     private async Task Guardar()
