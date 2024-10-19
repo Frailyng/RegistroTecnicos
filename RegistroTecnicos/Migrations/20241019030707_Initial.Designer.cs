@@ -11,7 +11,7 @@ using RegistroTecnicos.DAL;
 namespace RegistroTecnicos.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20241005124933_Initial")]
+    [Migration("20241019030707_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -19,6 +19,56 @@ namespace RegistroTecnicos.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
+
+            modelBuilder.Entity("RegistroTecnicos.Models.Articulos", b =>
+                {
+                    b.Property<int>("ArticuloId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Costo")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Existencia")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Precio")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("ArticuloId");
+
+                    b.ToTable("Articulos");
+
+                    b.HasData(
+                        new
+                        {
+                            ArticuloId = 1,
+                            Costo = 700.0,
+                            Descripcion = "Modem",
+                            Existencia = 50,
+                            Precio = 1500.0
+                        },
+                        new
+                        {
+                            ArticuloId = 2,
+                            Costo = 30.0,
+                            Descripcion = "Cable UTP",
+                            Existencia = 130,
+                            Precio = 70.0
+                        },
+                        new
+                        {
+                            ArticuloId = 3,
+                            Costo = 1000.0,
+                            Descripcion = "Router",
+                            Existencia = 40,
+                            Precio = 3200.0
+                        });
+                });
 
             modelBuilder.Entity("RegistroTecnicos.Models.Clientes", b =>
                 {
@@ -103,6 +153,9 @@ namespace RegistroTecnicos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("ArticuloId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("ClienteId")
                         .HasColumnType("INTEGER");
 
@@ -124,6 +177,8 @@ namespace RegistroTecnicos.Migrations
 
                     b.HasKey("TrabajoId");
 
+                    b.HasIndex("ArticuloId");
+
                     b.HasIndex("ClienteId");
 
                     b.HasIndex("PrioridadId");
@@ -133,8 +188,42 @@ namespace RegistroTecnicos.Migrations
                     b.ToTable("Trabajos");
                 });
 
+            modelBuilder.Entity("RegistroTecnicos.Models.TrabajosDetalle", b =>
+                {
+                    b.Property<int>("DetalleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ArticuloId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Costo")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Precio")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("TrabajoId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("DetalleId");
+
+                    b.HasIndex("TrabajoId");
+
+                    b.ToTable("TrabajosDetalle");
+                });
+
             modelBuilder.Entity("RegistroTecnicos.Models.Trabajos", b =>
                 {
+                    b.HasOne("RegistroTecnicos.Models.Articulos", "Articulo")
+                        .WithMany("Trabajos")
+                        .HasForeignKey("ArticuloId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("RegistroTecnicos.Models.Clientes", "Cliente")
                         .WithMany("Trabajos")
                         .HasForeignKey("ClienteId")
@@ -153,11 +242,29 @@ namespace RegistroTecnicos.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Articulo");
+
                     b.Navigation("Cliente");
 
                     b.Navigation("Prioridad");
 
                     b.Navigation("Tecnico");
+                });
+
+            modelBuilder.Entity("RegistroTecnicos.Models.TrabajosDetalle", b =>
+                {
+                    b.HasOne("RegistroTecnicos.Models.Trabajos", "Trabajo")
+                        .WithMany("TrabajosDetalle")
+                        .HasForeignKey("TrabajoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Trabajo");
+                });
+
+            modelBuilder.Entity("RegistroTecnicos.Models.Articulos", b =>
+                {
+                    b.Navigation("Trabajos");
                 });
 
             modelBuilder.Entity("RegistroTecnicos.Models.Clientes", b =>
@@ -168,6 +275,11 @@ namespace RegistroTecnicos.Migrations
             modelBuilder.Entity("RegistroTecnicos.Models.Tecnicos", b =>
                 {
                     b.Navigation("Trabajos");
+                });
+
+            modelBuilder.Entity("RegistroTecnicos.Models.Trabajos", b =>
+                {
+                    b.Navigation("TrabajosDetalle");
                 });
 #pragma warning restore 612, 618
         }
