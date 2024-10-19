@@ -8,8 +8,10 @@
             <option value="@articulo.ArticuloId">@articulo.ArticuloId - @articulo.Descripcion ($@articulo.Precio.ToString("N2"))</option>
         }
     </InputSelect>
-    <label class="col-form-label input-group-text">Valor:</label>
-    <InputNumber class="form-control" id="quantity-input" @bind-Value="Valor" min="0" />
+    <label class="col-form-label input-group-text">Cantidad:</label>
+    <InputNumber class="form-control" id="quantity-input" @bind-Value="Cantidad" min="0" />
+    <label class="col-form-label input-group-text">Precio:</label>
+    <InputNumber class="form-control" id="quantity-input" @bind-Value="Precio" min="0" />
 
     <button type="button" class="btn btn-outline-success bi bi-plus" @onclick="TriggerSelection">Agregar</button>
 </div>
@@ -31,7 +33,10 @@
     public int ArticuloId { get; set; }
 
     [Parameter]
-    public double Valor { get; set; }
+    public double Cantidad { get; set; }
+
+    [Parameter]
+    public double Precio { get; set; }
 
     private string? ErrorMessage { get; set; } = null;
 
@@ -41,8 +46,8 @@
         if (ArticuloId > 0)
         {
             var articuloSeleccionado = Articulos.Single(a => a.ArticuloId == ArticuloId);
-
-            await OnArticuloSelected.InvokeAsync((articuloSeleccionado, Valor));
+            await OnArticuloSelected.InvokeAsync((articuloSeleccionado, Cantidad));
+            await OnArticuloSelected.InvokeAsync((articuloSeleccionado, Precio));
         }
     }
 }

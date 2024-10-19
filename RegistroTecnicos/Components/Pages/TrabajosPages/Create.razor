@@ -77,7 +77,7 @@
             <!-- Monto -->
             <div class="mb-3">
                 <label for="Monto" class="form-label">Monto:</label>
-                <InputNumber @bind-Value="Trabajo.Monto" class="form-control form-select" />
+                <InputNumber @bind-Value="Trabajo.Monto" class="form-control" />
                 <ValidationMessage For="@(() => Trabajo.Monto)" />
             </div>
 
@@ -96,18 +96,20 @@
 
         @* Detalles del Trabajo *@
                 <div class="border border-success p-3 mt-3">
-                    <h5>Detalles del Trabajo</h5>
+                    <h5>Detalles de Articulos Utilizados</h5>
 
                     <ArticulosPicker Articulos="ListaArticulos"
                                     ArticuloId="DetalleSeleccionado.ArticuloId"
-                                     Valor="DetalleSeleccionado.Precio"
+                                    Cantidad="DetalleSeleccionado.Cantidad"
+                                     Precio="DetalleSeleccionado.Precio"
                                     OnArticuloSelected="HandleArticuloSelected" />
                     <hr />
                     <table class="table table-light">
                         <thead class="table table-striped">
                             <tr class="Text-center">
                                 <td>Articulo</td>
-                                <td>Cobrado</td>
+                                <td>Cantidad</td>
+                                <td>Precio</td>
                                 <td>Remover</td>
                             </tr>
                         </thead>
@@ -116,6 +118,7 @@
                             {
                             <tr> 
                             <td>@detalle.ArticuloId</td>
+                                 <td>@detalle.Cantidad</td>
                              <td>@detalle.Precio</td>
                               <td>
                     <button type="button" class="btn btn-outline-danger bi bi-trash"
