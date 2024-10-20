@@ -6,6 +6,7 @@
 @inject ArticulosService ArticulosService
 @inject NavigationManager navigationManager
 @inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
 
 <PageTitle>Create</PageTitle>
 <EditForm Model="Trabajo" OnValidSubmit="Guardar">
@@ -22,15 +23,13 @@
                 <!-- TrabajoId -->
                 <div class="mb-3">
                     <label for="TrabajoId" class="form-label">Trabajo ID:</label>
-                    <InputNumber @bind-Value="Trabajo.TrabajoId" class="form-control" />
-                    <ValidationMessage For="@(() => Trabajo.TrabajoId)" />
+                    <InputNumber @bind-Value="Trabajo.TrabajoId" class="form-control" readonly> </InputNumber>
                 </div>
 
                 <!-- Fecha -->
                 <div class="mb-3">
                     <label for="Fecha" class="form-label">Fecha:</label>
-                    <InputDate @bind-Value="Trabajo.Fecha" class="form-control" />
-                    <ValidationMessage For="@(() => Trabajo.Fecha)" />
+                    <InputDate @bind-Value="Trabajo.Fecha" class="form-control" ></InputDate>
                 </div>
 
                 <!-- ClienteId (Cargar desde Clientes) -->
@@ -43,7 +42,7 @@
                             <option value="@cliente.ClienteId">@cliente.Nombres</option>
                         }
                     </InputSelect>
-                    <ValidationMessage For="@(() => Trabajo.ClienteId)" />
+                    <ValidationMessage For="(() => Trabajo.ClienteId)" />
                 </div>
 
                 <!-- TecnicoId (Cargar desde Técnicos) -->
@@ -56,7 +55,7 @@
                             <option value="@tecnico.TecnicoId">@tecnico.Nombres</option>
                         }
                     </InputSelect>
-                    <ValidationMessage For="@(() => Trabajo.TecnicoId)" />
+                    <ValidationMessage For="(() => Trabajo.TecnicoId)" />
                 </div>
 
                 <!-- Descripción -->
@@ -177,9 +176,9 @@
             };
 
         Trabajo.TrabajosDetalle.Add(detalle);
+        Trabajo.Total = Trabajo.TrabajosDetalle.Sum(d => d.Precio);
 
         DetalleSeleccionado = new TrabajosDetalle();
-
         await Task.CompletedTask;
     }
 
@@ -187,30 +186,12 @@
 
     public async Task Guardar()
     {
-        try
-        {
-            var trabajoSinDetalles = new Trabajos
-                {
-                    TrabajoId = Trabajo.TrabajoId,
-                    Fecha = Trabajo.Fecha,
-                    ClienteId = Trabajo.ClienteId,
-                    TecnicoId = Trabajo.TecnicoId,
-                    Descripcion = Trabajo.Descripcion,
-                    Total = MontoTotal,
-                    PrioridadId = Trabajo.PrioridadId
-                };
 
-            var guardo = await TrabajosService.Guardar(trabajoSinDetalles);
+        var guardo = await TrabajosService.Guardar(Trabajo);
 
-            if (guardo)
-            {
-                navigationManager.NavigateTo("/Trabajos/Index");
-            }
-        }
-        catch (Exception ex)
+        if (guardo)
         {
-            // Manejar la excepción, por ejemplo, mostrando un mensaje de error
-            await JSRuntime.InvokeVoidAsync("alert", $"Ocurrió un error al guardar el trabajo: {ex.Message}");
+            navigationManager.NavigateTo("/Trabajos/Index");
         }
     }
 

@@ -5,14 +5,8 @@ using RegistroTecnicos.Models;
 
 namespace RegistroTecnicos.Services;
 
-public class TrabajosService
-{
-    private readonly Contexto contexto;
-
-    public TrabajosService(Contexto contexto)
-    {
-        this.contexto = contexto;
-    }
+public class TrabajosService(Contexto contexto)
+{ 
 
     public async Task<bool> Existe(int trabajoId)
     {
@@ -22,22 +16,21 @@ public class TrabajosService
     public async Task<bool> Insertar(Trabajos trabajo)
     {
         contexto.Trabajos.Add(trabajo);
-        await AfectarTrabajos(trabajo.TrabajosDetalle.ToArray());
+        await AfectarArticulos(trabajo.TrabajosDetalle.ToArray());
         return await contexto.SaveChangesAsync() > 0;
     }
 
-    public async Task AfectarTrabajos(TrabajosDetalle[] detalle)
+    public async Task AfectarArticulos(TrabajosDetalle[] detalle)
     {
         foreach (var item in detalle)
         {
-            var trabajo = await contexto.Trabajos.SingleAsync(t => t.TrabajoId == item.TrabajoId);
+            var articulo = await contexto.Articulos.SingleAsync(t => t.ArticuloId == item.ArticuloId);
         }
     }
 
     public async Task<bool> Modificar(Trabajos trabajo)
     {
         contexto.Update(trabajo);
-        await AfectarTrabajos(trabajo.TrabajosDetalle.ToArray());
         return await contexto.SaveChangesAsync() > 0;
     }
 
