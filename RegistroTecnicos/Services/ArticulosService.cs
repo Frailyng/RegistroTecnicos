@@ -15,11 +15,22 @@ public partial class ArticulosService(Contexto contexto)
             .ToListAsync();
     }
 
-    public async Task <List<Articulos>> GetArticulosPendientes(int articuloId)
+    public async Task<Articulos> BuscarPorId(int articuloId)
     {
-        return await contexto.Articulos
-            .Where(a => a.ArticuloId == articuloId)
-            .AsNoTracking()
-            .ToListAsync();
+        return await contexto.Articulos.FirstOrDefaultAsync(a => a.ArticuloId == articuloId);
+    }
+
+    public async Task<bool> Actualizar(Articulos articulo)
+    {
+        try
+        {
+            contexto.Articulos.Update(articulo);
+            await contexto.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 }

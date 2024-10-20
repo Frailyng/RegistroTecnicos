@@ -23,8 +23,10 @@
                 <!-- TrabajoId -->
                 <div class="mb-3">
                     <label for="TrabajoId" class="form-label">Trabajo ID:</label>
-                    <InputNumber @bind-Value="Trabajo.TrabajoId" class="form-control" readonly> </InputNumber>
+                    <InputNumber @bind-Value="Trabajo.TrabajoId" class="form-control" readonly style="background-color: #e9ecef; color: #6c757d;">
+                    </InputNumber>
                 </div>
+
 
                 <!-- Fecha -->
                 <div class="mb-3">
@@ -36,7 +38,7 @@
                 <div class="mb-3">
                     <label for="ClienteId" class="form-label">Cliente:</label>
                     <InputSelect @bind-Value="Trabajo.ClienteId" class="form-control form-select">
-                        <option value="">Seleccione un cliente</option>
+                        <option value="0" selected diabled>Seleccione un cliente</option>
                         @foreach (var cliente in ListaClientes)
                         {
                             <option value="@cliente.ClienteId">@cliente.Nombres</option>
@@ -49,7 +51,7 @@
                 <div class="mb-3">
                     <label for="TecnicoId" class="form-label">Técnico:</label>
                     <InputSelect @bind-Value="Trabajo.TecnicoId" class="form-control form-select">
-                        <option value="">Seleccione un técnico</option>
+                        <option value="0" selected diabled>Seleccione un técnico</option>
                         @foreach (var tecnico in ListaTecnicos)
                         {
                             <option value="@tecnico.TecnicoId">@tecnico.Nombres</option>
@@ -76,7 +78,7 @@
                 <div class="mb-3">
                     <label for="PrioridadId" class="form-label">Prioridad:</label>
                     <InputSelect @bind-Value="Trabajo.PrioridadId" class="form-control form-select">
-                        <option value="">Seleccione una prioridad</option>
+                        <option value="0" selected diabled>Seleccione una prioridad</option>
                         @foreach (var prioridad in ListaPrioridades)
                         {
                             <option value="@prioridad.PrioridadId">@prioridad.Descripcion</option>
@@ -176,7 +178,6 @@
             };
 
         Trabajo.TrabajosDetalle.Add(detalle);
-        Trabajo.Total = Trabajo.TrabajosDetalle.Sum(d => d.Precio);
 
         DetalleSeleccionado = new TrabajosDetalle();
         await Task.CompletedTask;
@@ -186,14 +187,30 @@
 
     public async Task Guardar()
     {
-
+        Trabajo.Total = MontoTotal;
         var guardo = await TrabajosService.Guardar(Trabajo);
 
         if (guardo)
         {
+            foreach (var detalle in Trabajo.TrabajosDetalle)
+            {
+                var articulo = await ArticulosService.BuscarPorId(detalle.ArticuloId);
+
+                if (articulo != null)
+                {
+                    articulo.Existencia -= detalle.Cantidad;
+                    if (articulo.Existencia < 0)
+                    {
+                        articulo.Existencia = 0;
+                    }
+
+                    await ArticulosService.Actualizar(articulo);
+                }
+            }
             navigationManager.NavigateTo("/Trabajos/Index");
         }
     }
+
 
 
     public void RemoverDetalle(TrabajosDetalle detalle)
