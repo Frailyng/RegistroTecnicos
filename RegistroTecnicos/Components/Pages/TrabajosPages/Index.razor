@@ -4,6 +4,7 @@
 @inject TecnicoService TecnicoService
 
 <EditForm Model="ListaTrabajos" class="border shadow-lg p-4 rounded bg-light">
+    <div class="container">
     <div class="card-header bg-lightgreen text-dark text-center py-3 rounded">
         <h3 class="mb-0 font-weight-bold">Consulta de Trabajos</h3>
     </div>
@@ -13,8 +14,6 @@
                 <label for="Filtro" class="form-label">Filtrar por:</label>
                 <select @bind="filtro" class="form-select">
                     <option value="Id">TrabajoId</option>
-                    <option value="ClienteId">ClienteId</option>
-                    <option value="TecnicoId">TecnicoId</option>
                     <option value="NombreCliente">Nombre del Cliente</option>
                     <option value="NombreTecnico">Nombre del Técnico</option>
                     <option value="Fecha">Fecha</option>
@@ -50,9 +49,7 @@
             <tr>
                 <th>TrabajoId</th>
                 <th>Fecha</th>
-                <th>ClienteId</th>
                 <th>Nombre del Cliente</th>
-                <th>TecnicoId</th>
                 <th>Nombre del Técnico</th>
                 <th>Descripción</th>
                 <th>Monto</th>
@@ -67,13 +64,11 @@
             {
                 <tr>
                     <td>@trabajo.TrabajoId</td>
-                    <td>@trabajo.Fecha?.ToShortDateString()</td>
-                    <td>@trabajo.ClienteId</td>
+                    <td>@trabajo.Fecha.ToShortDateString()</td>
                     <td>@trabajo.Cliente?.Nombres</td>
-                    <td>@trabajo.TecnicoId</td>
                     <td>@trabajo.Tecnico?.Nombres</td>
                     <td>@trabajo.Descripcion</td>
-                    <td>@trabajo.Monto</td>
+                    <td>@trabajo.Total</td>
                     <td>@trabajo.Prioridad?.Descripcion</td>
                     <td>
                         <a class="btn btn-outline-primary" href="/Trabajos/Details/@trabajo.TrabajoId">
@@ -94,6 +89,11 @@
             }
         </tbody>
     </table>
+
+    <div class="card-footer space-between">
+        <label>Cantidad:  @ListaTrabajos.Count()</label>
+    </div>
+    </div>
 </EditForm>
 
 @code {
@@ -109,6 +109,7 @@
     {
         ListaClientes = await ClientesServices.ObtenerListaClientes();
         ListaTecnicos = await TecnicoService.ObtenerListaTecnicos();
+        ListaTrabajos = await TrabajosService.Listar(t => t.TrabajoId > 0);
         await Buscar(); // Cargar los trabajos inicialmente
     }
 
@@ -120,14 +121,6 @@
             {
                 ListaTrabajos = await TrabajosService.Listar(p => p.TrabajoId == trabajoId);
             }
-            else if (filtro == "ClienteId" && int.TryParse(valorFiltro, out int clienteId))
-            {
-                ListaTrabajos = await TrabajosService.Listar(p => p.ClienteId == clienteId);
-            }
-            else if (filtro == "TecnicoId" && int.TryParse(valorFiltro, out int tecnicoId))
-            {
-                ListaTrabajos = await TrabajosService.Listar(p => p.TecnicoId == tecnicoId);
-            }
             else if (filtro == "NombreCliente")
             {
                 ListaTrabajos = await TrabajosService.Listar(p => p.Cliente != null && p.Cliente.Nombres.Contains(valorFiltro));
@@ -138,7 +131,7 @@
             }
             else if (filtro == "Fecha" && DateTime.TryParse(valorFiltro, out DateTime fecha))
             {
-                ListaTrabajos = await TrabajosService.Listar(p => p.Fecha.Value.Date == fecha.Date);
+                ListaTrabajos = await TrabajosService.Listar(p => p.Fecha.Date == fecha.Date);
             }
             else if (filtro == "Prioridad")
             {

@@ -1,0 +1,62 @@
+﻿@page "/Articulo/Index"
+@inject ArticulosService ArticulosService
+@rendermode InteractiveServer
+
+<EditForm Model="ListaArticulos" class="border shadow-lg p-4 rounded bg-light">
+    <Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopRight" />
+
+    <div class="card-header bg-lightgreen text-dark text-center py-3 rounded">
+        <h3 class="mb-0 font-weight-bold">Consulta de Articulos</h3>
+    </div>
+    <div class="card-body">
+
+    <table class="table table-bordered text-center shadow-sm rounded">
+        <thead class="bg-darkgreen text-white">
+            <tr>
+                <th>ArticuloID</th>
+                <th>Descripcion</th>
+                <th>Costo</th>
+                <th>Precio</th>
+                <th>Existencia</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Articulo in ListaArticulos)
+            {
+                <tr>
+                    <td>@Articulo.ArticuloId</td>
+                    <td>@Articulo.Descripcion</td>
+                    <td>@Articulo.Costo</td> 
+                    <td>@Articulo.Precio</td>
+                        <td>@Articulo.Existencia</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    </div>
+    <div class="card-footer space-between">
+        <label>Cantidad:  @ListaArticulos.Count()</label>
+    </div>
+</EditForm>
+
+@code {
+    public Articulos Articulos = new Articulos();
+    public List<Articulos> ListaArticulos = new List<Articulos>();
+    List<ToastMessage> messages = new List<ToastMessage>();
+
+
+    private void ShowMessage(ToastType toastType) => messages.Add(CreateToastMessage(toastType));
+
+    private ToastMessage CreateToastMessage(ToastType toastType) => new ToastMessage
+        {
+            Type = toastType,
+            Title = "Blazor Bootstrap",
+            HelpText = $"{DateTime.Now}",
+            Message = $"Hello, World! This is a toast message. DateTime: {DateTime.Now}",
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaArticulos = await ArticulosService.Listar(c => true);
+    }
+}
