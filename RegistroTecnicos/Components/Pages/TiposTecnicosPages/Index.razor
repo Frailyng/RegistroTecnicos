@@ -64,9 +64,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var tiposPredefinidos = TiposTecnicosService.Listar(c => true);
+        ListaTiposTecnicos = await TiposTecnicosService.Listar(c => true);
     }
 }
-
-
-
