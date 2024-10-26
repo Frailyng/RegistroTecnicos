@@ -5,16 +5,18 @@ using RegistroTecnicos.Models;
 
 namespace RegistroTecnicos.Services;
 
-public class TrabajosService(Contexto contexto)
+public class TrabajosService(IDbContextFactory<Contexto> DbFactory)
 { 
 
     public async Task<bool> Existe(int trabajoId)
     {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
         return await contexto.Trabajos.AnyAsync(t => t.TrabajoId == trabajoId);
     }
 
     public async Task<bool> Insertar(Trabajos trabajo)
     {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
         contexto.Trabajos.Add(trabajo);
         await AfectarArticulos(trabajo.TrabajosDetalle.ToArray());
         return await contexto.SaveChangesAsync() > 0;
@@ -22,6 +24,7 @@ public class TrabajosService(Contexto contexto)
 
     public async Task AfectarArticulos(TrabajosDetalle[] detalle)
     {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
         foreach (var item in detalle)
         {
             var articulo = await contexto.Articulos.SingleAsync(t => t.ArticuloId == item.ArticuloId);
@@ -30,6 +33,7 @@ public class TrabajosService(Contexto contexto)
 
     public async Task<bool> Modificar(Trabajos trabajo)
     {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
         contexto.Update(trabajo);
         return await contexto.SaveChangesAsync() > 0;
     }
@@ -48,6 +52,7 @@ public class TrabajosService(Contexto contexto)
 
     public async Task<Trabajos> Buscar(int id)
     {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
         return await contexto.Trabajos
             .Include(t => t.Cliente)
             .Include(t => t.Tecnico)
@@ -59,6 +64,7 @@ public class TrabajosService(Contexto contexto)
 
     public async Task<bool> Eliminar(int id)
     {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
         return await contexto.Trabajos
             .Include(t => t.TrabajosDetalle)
             .Where(t => t.TrabajoId == id)
@@ -67,6 +73,7 @@ public class TrabajosService(Contexto contexto)
 
     public async Task<List<Trabajos>> Listar(Expression<Func<Trabajos, bool>> criterio)
     {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
         return await contexto.Trabajos
             .Include(t => t.Cliente)
             .Include(t => t.Tecnico)
