@@ -73,8 +73,8 @@ public class TiposTecnicosService(IDbContextFactory<Contexto> DbFactory)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
         return await contexto.TiposTecnicos
-            .AsNoTracking()
             .Where(criterio)
+            .AsNoTracking()
             .ToListAsync();
     }
 }

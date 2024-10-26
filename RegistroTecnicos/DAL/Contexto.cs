@@ -19,24 +19,23 @@ public class Contexto : DbContext
     public DbSet<TrabajosDetalle> TrabajosDetalle { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    { 
-
+    {
         modelBuilder.Entity<Articulos>().HasData(new List<Articulos>()
-        {
-            new Articulos(){ArticuloId = 1, Descripcion = "Modem", Costo = 700, Precio = 1500, Existencia = 50},
-            new Articulos(){ ArticuloId = 2, Descripcion = "Cable UTP", Costo = 30, Precio = 70, Existencia = 130},
-            new Articulos(){ArticuloId = 3, Descripcion = "Router", Costo = 1000, Precio = 3200, Existencia = 40 }
-        });
-        base.OnModelCreating(modelBuilder);
+    {
+        new Articulos(){ArticuloId = 1, Descripcion = "Modem", Costo = 700, Precio = 1500, Existencia = 50},
+        new Articulos(){ArticuloId = 2, Descripcion = "Cable UTP", Costo = 30, Precio = 70, Existencia = 130},
+        new Articulos(){ArticuloId = 3, Descripcion = "Router", Costo = 1000, Precio = 3200, Existencia = 40 }
+    });
 
         modelBuilder.Entity<TiposTecnicos>().HasData(new List<TiposTecnicos>()
-        {
-            new TiposTecnicos(){TipoTecnicoId = 1, Descripcion = "Redes", Activo = true},
-            new TiposTecnicos(){TipoTecnicoId = 2, Descripcion = "Reparacion", Activo = true},
-            new TiposTecnicos(){TipoTecnicoId = 3, Descripcion = "Impresoras", Activo = true},
-            new TiposTecnicos(){TipoTecnicoId = 4, Descripcion = "Soporte", Activo = true},
-            new TiposTecnicos(){TipoTecnicoId = 5, Descripcion = "Celulares", Activo = false}
+    {
+        new TiposTecnicos(){TipoTecnicoId = 1, Descripcion = "Redes", Activo = true},
+        new TiposTecnicos(){TipoTecnicoId = 2, Descripcion = "Reparacion", Activo = true},
+        new TiposTecnicos(){TipoTecnicoId = 3, Descripcion = "Impresoras", Activo = true},
+        new TiposTecnicos(){TipoTecnicoId = 4, Descripcion = "Soporte", Activo = true},
+        new TiposTecnicos(){TipoTecnicoId = 5, Descripcion = "Celulares", Activo = false}
     });
+
         base.OnModelCreating(modelBuilder);
     }
 }
