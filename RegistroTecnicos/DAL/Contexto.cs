@@ -26,16 +26,6 @@ public class Contexto : DbContext
         new Articulos(){ArticuloId = 2, Descripcion = "Cable UTP", Costo = 30, Precio = 70, Existencia = 130},
         new Articulos(){ArticuloId = 3, Descripcion = "Router", Costo = 1000, Precio = 3200, Existencia = 40 }
     });
-
-        modelBuilder.Entity<TiposTecnicos>().HasData(new List<TiposTecnicos>()
-    {
-        new TiposTecnicos(){TipoTecnicoId = 1, Descripcion = "Redes", Activo = true},
-        new TiposTecnicos(){TipoTecnicoId = 2, Descripcion = "Reparacion", Activo = true},
-        new TiposTecnicos(){TipoTecnicoId = 3, Descripcion = "Impresoras", Activo = true},
-        new TiposTecnicos(){TipoTecnicoId = 4, Descripcion = "Soporte", Activo = true},
-        new TiposTecnicos(){TipoTecnicoId = 5, Descripcion = "Celulares", Activo = false}
-    });
-
         base.OnModelCreating(modelBuilder);
     }
 }
