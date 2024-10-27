@@ -18,6 +18,10 @@ public class Contexto : DbContext
 
     public DbSet<TrabajosDetalle> TrabajosDetalle { get; set; }
 
+    public DbSet<Cotizaciones> Cotizaciones { get; set; }
+
+    public DbSet<CotizacionesDetalle> CotizacionesDetalle { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Articulos>().HasData(new List<Articulos>()
