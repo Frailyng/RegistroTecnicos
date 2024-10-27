@@ -1,91 +1,55 @@
-﻿@page "/Trabajos/Create"
-@inject TrabajosService TrabajosService
-@inject ClientesServices ClientesServices
-@inject TecnicoService TecnicoService
-@inject PrioridadesService PrioridadesService
+﻿@page "/Cotizaciones/Create"
+@inject CotizacionesService CotizacionesService
+@inject ClientesServices ClientesService
 @inject ArticulosService ArticulosService
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
 <PageTitle>Create</PageTitle>
-<EditForm Model="Trabajo" OnValidSubmit="Guardar">
+<EditForm Model="Cotizacion" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
 
     <div class="container">
         <div class="card shadow-lg">
             <div class="card-header">
-                <h5 class="card-title">Crear Trabajos</h5>
+                <h5 class="card-title">Crear Cotizacion</h5>
             </div>
 
             <div class="card-body">
-                <!-- TrabajoId -->
+                <!-- CotizacionId -->
                 <div class="mb-3">
-                    <label for="TrabajoId" class="form-label">Trabajo ID:</label>
-                    <InputNumber @bind-Value="Trabajo.TrabajoId" class="form-control" readonly style="background-color: #e9ecef; color: #6c757d;">
+                    <label for="CotizacionId" class="form-label">Cotizacion ID:</label>
+                    <InputNumber @bind-Value="Cotizacion.CotizacionId" class="form-control" readonly style="background-color: #e9ecef; color: #6c757d;">
                     </InputNumber>
                 </div>
-
 
                 <!-- Fecha -->
                 <div class="mb-3">
                     <label for="Fecha" class="form-label"><strong>Fecha</strong></label>
-                    <InputDate @bind-Value="Trabajo.Fecha" class="form-control" ></InputDate>
+                    <InputDate @bind-Value="Cotizacion.Fecha" class="form-control"></InputDate>
                 </div>
 
                 <!-- ClienteId (Cargar desde Clientes) -->
                 <div class="mb-3">
                     <label for="ClienteId" class="form-label">Cliente:</label>
-                    <InputSelect @bind-Value="Trabajo.ClienteId" class="form-control form-select">
+                    <InputSelect @bind-Value="Cotizacion.ClienteId" class="form-control form-select">
                         <option value="0" selected diabled>Seleccione un cliente</option>
                         @foreach (var cliente in ListaClientes)
                         {
                             <option value="@cliente.ClienteId">@cliente.Nombres</option>
                         }
                     </InputSelect>
-                    <ValidationMessage For="(() => Trabajo.ClienteId)" />
+                    <ValidationMessage For="(() => Cotizacion.ClienteId)" />
                 </div>
 
-                <!-- TecnicoId (Cargar desde Técnicos) -->
+                <!-- Observacion -->
                 <div class="mb-3">
-                    <label for="TecnicoId" class="form-label">Técnico:</label>
-                    <InputSelect @bind-Value="Trabajo.TecnicoId" class="form-control form-select">
-                        <option value="0" selected diabled>Seleccione un técnico</option>
-                        @foreach (var tecnico in ListaTecnicos)
-                        {
-                            <option value="@tecnico.TecnicoId">@tecnico.Nombres</option>
-                        }
-                    </InputSelect>
-                    <ValidationMessage For="(() => Trabajo.TecnicoId)" />
+                    <label for="Observacion" class="form-label">Observación:</label>
+                    <InputText @bind-Value="Cotizacion.Observacion" class="form-control" />
+                    <ValidationMessage For="@(() => Cotizacion.Observacion)" />
                 </div>
 
-                <!-- Descripción -->
-                <div class="mb-3">
-                    <label for="Descripcion" class="form-label">Descripción:</label>
-                    <InputText @bind-Value="Trabajo.Descripcion" class="form-control" />
-                    <ValidationMessage For="@(() => Trabajo.Descripcion)" />
-                </div>
-
-                <!-- Monto -->
-                <div class="mb-3">
-                    <label for="Monto" class="form-label">Monto:</label>
-                    <InputNumber @bind-Value="Trabajo.Total" class="form-control" />
-                    <ValidationMessage For="@(() => Trabajo.Total)" />
-                </div>
-
-                <!-- Prioridad (Cargar desde Prioridades) -->
-                <div class="mb-3">
-                    <label for="PrioridadId" class="form-label">Prioridad:</label>
-                    <InputSelect @bind-Value="Trabajo.PrioridadId" class="form-control form-select">
-                        <option value="0" selected diabled>Seleccione una prioridad</option>
-                        @foreach (var prioridad in ListaPrioridades)
-                        {
-                            <option value="@prioridad.PrioridadId">@prioridad.Descripcion</option>
-                        }
-                    </InputSelect>
-                    <ValidationMessage For="@(() => Trabajo.PrioridadId)" />
-                </div>
-
-                @* Detalles del Trabajo *@
+                  @* Detalles de la Cotizacion *@
                 <div class="border border-success p-3 mt-3">
                     <h5>Detalles de Articulos Utilizados</h5>
 
@@ -95,7 +59,7 @@
                                      Precio="DetalleSeleccionado.Precio"
                                      OnArticuloSelected="HandleArticuloSelected" />
                     <hr />
-                    <table class="table table-light">
+                     <table class="table table-light">
                         <thead class="table table-striped">
                             <tr class="Text-center">
                                 <td>Articulo</td>
@@ -105,7 +69,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var detalle in Trabajo.TrabajosDetalle)
+                            @foreach (var detalle in Cotizacion.CotizacionesDetalle)
                             {
                                 <tr>
                                     <td>@detalle.ArticuloId</td>
@@ -128,7 +92,7 @@
                         <div class="mb-3">
                             <label class="form-label"><strong>Monto Total a Pagar</strong></label>
                             <label class="form-control text-end"><strong>@MontoTotal</strong></label>
-                            <ValidationMessage For="(() => Trabajo.Total)" />
+                            <ValidationMessage For="(() => Cotizacion.Monto)" />
                         </div>
                     </div>
                 </div>
@@ -136,31 +100,29 @@
 
             @* footer *@
             <div class="card-footer text-center mt-2">
-                <a href="/Trabajos/Index" class="btn btn-secondary"> <span class="bi bi-arrow-left"></span> Volver</a>
+                <a href="/Cotizaciones/Index" class="btn btn-secondary"> <span class="bi bi-arrow-left"></span> Volver</a>
                 <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
             </div>
         </div>
     </div>
 </EditForm>
 
+
 @code {
-    private Trabajos Trabajo = new Trabajos();
-    public TrabajosDetalle DetalleSeleccionado { get; set; } = new();
+    private Cotizaciones Cotizacion = new Cotizaciones();
+    public CotizacionesDetalle DetalleSeleccionado { get; set; } = new();
     public List<Articulos> ListaArticulos { get; set; } = new();
-    private List<Clientes> ListaClientes = new List<Clientes>();
-    private List<Tecnicos> ListaTecnicos = new List<Tecnicos>();
-    private List<Prioridades> ListaPrioridades = new List<Prioridades>();
+    public List<Clientes> ListaClientes { get; set; } = new List<Clientes>();
 
     protected override async Task OnInitializedAsync()
     {
 
-        Trabajo.Fecha = DateTime.Today;
+        Cotizacion.Fecha = DateTime.Today;
 
-        Trabajo.TrabajosDetalle = new List<TrabajosDetalle>();
+        Cotizacion.CotizacionesDetalle = new List<CotizacionesDetalle>();
         ListaArticulos = await ArticulosService.Listar(a => true);
-        ListaClientes = await ClientesServices.ObtenerListaClientes();
-        ListaTecnicos = await TecnicoService.ObtenerListaTecnicos();
-        ListaPrioridades = await PrioridadesService.ObtenerListaPrioridades();
+        ListaClientes = await ClientesService.ObtenerListaClientes();
+
     }
 
 
@@ -168,29 +130,28 @@
     {
         double precioTotal = selection.cantidad * selection.articulos.Precio;
 
-        var detalle = new TrabajosDetalle
+        var detalle = new CotizacionesDetalle
             {
                 ArticuloId = selection.articulos.ArticuloId,
                 Cantidad = selection.cantidad,
                 Precio = precioTotal
             };
 
-        Trabajo.TrabajosDetalle.Add(detalle);
+        Cotizacion.CotizacionesDetalle.Add(detalle);
 
-        DetalleSeleccionado = new TrabajosDetalle();
+        DetalleSeleccionado = new CotizacionesDetalle();
         await Task.CompletedTask;
     }
-
-    public double MontoTotal => Trabajo.Total + Trabajo.TrabajosDetalle.Sum(d => d.Precio);
+    public double MontoTotal => Cotizacion.CotizacionesDetalle.Sum(d => d.Precio);
 
     public async Task Guardar()
     {
-        Trabajo.Total = MontoTotal;
-        var guardo = await TrabajosService.Guardar(Trabajo);
+        Cotizacion.Monto = MontoTotal;
+        var guardo = await CotizacionesService.Guardar(Cotizacion);
 
         if (guardo)
         {
-            foreach (var detalle in Trabajo.TrabajosDetalle)
+            foreach (var detalle in Cotizacion.CotizacionesDetalle)
             {
                 var articulo = await ArticulosService.BuscarPorId(detalle.ArticuloId);
 
@@ -205,15 +166,13 @@
                     await ArticulosService.Actualizar(articulo);
                 }
             }
-            navigationManager.NavigateTo("/Trabajos/Index");
+            navigationManager.NavigateTo("/Cotizaciones/Index");
         }
     }
 
-
-
-    public void RemoverDetalle(TrabajosDetalle detalle)
+    public void RemoverDetalle(CotizacionesDetalle detalle)
     {
-        Trabajo.TrabajosDetalle.Remove(detalle);
+        Cotizacion.CotizacionesDetalle.Remove(detalle);
         DetalleSeleccionado = detalle;
     }
 }

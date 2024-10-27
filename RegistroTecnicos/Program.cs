@@ -9,10 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 //Obtenemos el Constr para usarlo en el contexto
-var ConStr = builder.Configuration.GetConnectionString("ConStr");
+var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
 
 //Agregamos el contexto al builder con el ConStr
-builder.Services.AddDbContext<Contexto>(Options => Options.UseSqlite(ConStr));
+builder.Services.AddDbContextFactory<Contexto>(Options => Options.UseSqlServer(ConStr));
 
 builder.Services.AddScoped<TecnicoService>();
 builder.Services.AddScoped<TiposTecnicosService>();
@@ -20,6 +20,7 @@ builder.Services.AddScoped<ClientesServices>();
 builder.Services.AddScoped<TrabajosService>();
 builder.Services.AddScoped<PrioridadesService>();
 builder.Services.AddScoped<ArticulosService>();
+builder.Services.AddScoped<CotizacionesService>();
 
 builder.Services.AddBlazorBootstrap();
 
