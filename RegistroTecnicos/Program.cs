@@ -20,6 +20,7 @@ builder.Services.AddScoped<ClientesServices>();
 builder.Services.AddScoped<TrabajosService>();
 builder.Services.AddScoped<PrioridadesService>();
 builder.Services.AddScoped<ArticulosService>();
+builder.Services.AddScoped<CotizacionesService>();
 
 builder.Services.AddBlazorBootstrap();
 
