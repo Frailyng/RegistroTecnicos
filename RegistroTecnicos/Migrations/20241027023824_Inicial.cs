@@ -87,6 +87,28 @@ namespace RegistroTecnicos.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Cotizaciones",
+                columns: table => new
+                {
+                    CotizacionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ClienteId = table.Column<int>(type: "int", nullable: false),
+                    Observacion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Monto = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cotizaciones", x => x.CotizacionId);
+                    table.ForeignKey(
+                        name: "FK_Cotizaciones_Clientes_ClienteId",
+                        column: x => x.ClienteId,
+                        principalTable: "Clientes",
+                        principalColumn: "ClienteId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Trabajos",
                 columns: table => new
                 {
@@ -129,6 +151,28 @@ namespace RegistroTecnicos.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CotizacionesDetalle",
+                columns: table => new
+                {
+                    DetalleId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CotizacionId = table.Column<int>(type: "int", nullable: false),
+                    ArticuloId = table.Column<int>(type: "int", nullable: false),
+                    Cantidad = table.Column<int>(type: "int", nullable: false),
+                    Precio = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CotizacionesDetalle", x => x.DetalleId);
+                    table.ForeignKey(
+                        name: "FK_CotizacionesDetalle_Cotizaciones_CotizacionId",
+                        column: x => x.CotizacionId,
+                        principalTable: "Cotizaciones",
+                        principalColumn: "CotizacionId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TrabajosDetalle",
                 columns: table => new
                 {
@@ -161,6 +205,16 @@ namespace RegistroTecnicos.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cotizaciones_ClienteId",
+                table: "Cotizaciones",
+                column: "ClienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CotizacionesDetalle_CotizacionId",
+                table: "CotizacionesDetalle",
+                column: "CotizacionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Trabajos_ArticulosArticuloId",
                 table: "Trabajos",
                 column: "ArticulosArticuloId");
@@ -190,10 +244,16 @@ namespace RegistroTecnicos.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "CotizacionesDetalle");
+
+            migrationBuilder.DropTable(
                 name: "TiposTecnicos");
 
             migrationBuilder.DropTable(
                 name: "TrabajosDetalle");
+
+            migrationBuilder.DropTable(
+                name: "Cotizaciones");
 
             migrationBuilder.DropTable(
                 name: "Trabajos");
