@@ -17,6 +17,6 @@ namespace RegistroTecnicos.Models
         public string Observacion { get; set; }
         public double Monto { get; set; }
 
-       // public ICollection<CotizacionesDetalle> CotizacionesDetalle { get; set; } = new List<CotizacionesDetalle>();
+       public ICollection<CotizacionesDetalle> CotizacionesDetalle { get; set; } = new List<CotizacionesDetalle>();
 }
 }
