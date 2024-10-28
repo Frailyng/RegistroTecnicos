@@ -1,87 +1,146 @@
 ﻿@page "/Cotizaciones/Edit/{CotizacionId:int}"
 @inject CotizacionesService CotizacionesService
 @inject ClientesServices ClientesService
+@inject ArticulosService ArticulosService
 @inject NavigationManager navigationManager
-@inject IJSRuntime JSRuntime
 
-<EditForm Model="Cotizacion" OnValidSubmit="Guardar">
+
+<PageTitle>Edit</PageTitle>
+<EditForm Model="Cotizacion" OnValidSubmit="Modificar">
     <DataAnnotationsValidator />
-     <div class="card shadow-lg border-0 rounded" style="background-color: #f8f9fa;">
-        <div class="card-header bg-primary text-white" style="text-align: center;">
-            <h3><i class="fas fa-clipboard-list"></i> Editar Cotizacion</h3>
-        </div>
 
-         <div class="card-body">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="CotizacionId" class="form-label">CotizacionId:</label>
-                    <InputNumber @bind-Value="Cotizacion.CotizacionId" class="form-control" style="font-size: 0.8em;" readonly />
-                </div>
+     <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Editar Cobro</h5>
             </div>
 
+         <div class="card-body">
+
+                @* CotizacionId *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>CotizacionId</strong></label>
+                    <InputNumber class="form-control" @bind-Value="Cotizacion.CotizacionId" readonly></InputNumber>
+                </div>
+
+                @* Observacion *@
             <div class="mb-3">
                 <label for="Observacion" class="form-label">Observación:</label>
                 <InputText @bind-Value="Cotizacion.Observacion" class="form-control" />
-                <ValidationMessage For="@(() => Cotizacion.Observacion)" />
             </div>
 
-            <div class="mb-3">
-                <label for="Fecha" class="form-label">Fecha:</label>
-                <InputDate @bind-Value="Cotizacion.Fecha" class="form-control" />
-                <ValidationMessage For="@(() => Cotizacion.Fecha)" />
-            </div>
+                @* Fecha *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Fecha</strong></label>
+                    <InputDate class="form-control" @bind-Value="Cotizacion.Fecha"></InputDate>
+                </div>
 
-            <div class="mb-3">
-                <label for="Monto" class="form-label">Monto:</label>
-                <InputNumber @bind-Value="Cotizacion.Monto" class="form-control" />
-                <ValidationMessage For="@(() => Cotizacion.Monto)" />
-            </div>
+                @* Cliente *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Cliente</strong></label>
+                    <input class="form-control" value="@Cliente.Nombres" />
+                </div>
 
-            <div class="mb-3">
-                <label for="ClienteId" class="form-label">Cliente:</label>
-                <InputSelect @bind-Value="Cotizacion.ClienteId" class="form-control">
-                    <option value="">Seleccione un Cliente</option>
-                    @foreach (var cliente in ListaClientes)
-                    {
-                        <option value="@cliente.ClienteId">@cliente.Nombres</option>
-                    }
-                </InputSelect>
-                <ValidationMessage For="@(() => Cotizacion.ClienteId)" />
-            </div>
-        </div>
+             @* Detalles del Cobro *@
+                <div class="border border-success p-3 mt-3">
+                    <h5>Detalles de la cotizacion</h5>
 
-            <div class="card-footer bg-light d-flex justify-content-center mt-3">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-outline-primary ml-2" @onclick="Nuevo"><span class="bi bi-plus"></span> Nuevo </button>
-                    <button type="submit" class="btn btn-outline-success ml-2"><span class="bi bi-check-circle-fill"></span> Guardar </button>
-                    <a type="button" href="/Cotizaciones/Index/" class="btn btn-outline-danger"><span class="bi bi-arrow-bar-left"></span> Retroceder </a>
+                    <ArticulosPicker Articulos="ListaArticulos"
+                                     ArticuloId="DetalleSeleccionado.ArticuloId"
+                                     Cantidad="DetalleSeleccionado.Cantidad"
+                                     Precio="DetalleSeleccionado.Precio"
+                                     OnArticuloSelected="HandleArticuloSelected" />
+                    <hr />
+                    <table class="table table-light">
+                        <thead class="table table-striped">
+                            <tr class="Text-center">
+                                <td>Articulo</td>
+                                <td>Cantidad</td>
+                                <td>Precio Total</td>
+                                <td>Remover</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var detalle in Cotizacion.CotizacionesDetalle)
+                            {
+                                <tr>
+                                    <td>@detalle.ArticuloId</td>
+                                    <td>@detalle.Cantidad</td>
+                                    <td>@detalle.Precio</td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-danger bi bi-trash"
+                                                @onclick="() => RemoverDetalle(detalle)"></button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <hr />
+                </div>
+
+
+                @* Monto Total *@
+                <div class="row">
+                    <div class="col-6 offset-6">
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Monto Total a Pagar</strong></label>
+                            <label class="form-control text-end"><strong>@MontoTotal</strong></label>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            @* footer *@
+            <div class="card-footer text-center mt-2">
+                <a href="/Cotizaciones/Index" class="btn btn-secondary"> <span class="bi bi-arrow-left"></span> Volver</a>
+                <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
+            </div>
         </div>
+    </div>
 </EditForm>
+
 
 @code {
     [Parameter]
-    public int? CotizacionId { get; set; }
+    public int CotizacionId { get; set; }
 
-    public Cotizaciones Cotizacion { get; set; } = new Cotizaciones();
+    private Cotizaciones Cotizacion = new Cotizaciones();
+    public CotizacionesDetalle DetalleSeleccionado { get; set; } = new();
+    public Clientes Cliente { get; set; } = new();
+    public List<Articulos> ListaArticulos { get; set; } = new();
     public List<Clientes> ListaClientes { get; set; } = new List<Clientes>();
+
+
+    public string Mensaje = string.Empty;
+
 
     protected override async Task OnInitializedAsync()
     {
-        ListaClientes = await ClientesService.ObtenerListaClientes();
+        Cotizacion = await CotizacionesService.Buscar(CotizacionId);
+        Cliente = await ClientesService.Buscar(Cotizacion.ClienteId);
+        Cotizacion.Fecha = DateTime.Today;
+        ListaArticulos = await ArticulosService.Listar(a => true);
 
-        if (CotizacionId.HasValue)
-        {
-            Cotizacion.CotizacionId = CotizacionId.Value;
-            await Buscar();
-        }
     }
 
-    public void Nuevo()
+
+    private async Task HandleArticuloSelected((Articulos articulos, int cantidad, double precio) selection)
     {
-        Cotizacion = new Cotizaciones();
+        double precioTotal = selection.cantidad * selection.articulos.Precio;
+
+        var detalle = new CotizacionesDetalle
+            {
+                ArticuloId = selection.articulos.ArticuloId,
+                Cantidad = selection.cantidad,
+                Precio = precioTotal
+            };
+
+        Cotizacion.CotizacionesDetalle.Add(detalle);
+
+        DetalleSeleccionado = new CotizacionesDetalle();
+        await Task.CompletedTask;
     }
+    public double MontoTotal => Cotizacion.CotizacionesDetalle.Sum(d => d.Precio);
 
     public async Task Buscar()
     {
@@ -93,14 +152,36 @@
         }
     }
 
-    public async Task Guardar()
+    public async Task Modificar()
     {
-        var guardo = await CotizacionesService.Guardar(Cotizacion);
-        if (guardo)
+        Cotizacion.Monto = MontoTotal;
+        var modifico = await CotizacionesService.Modificar(Cotizacion);
+
+        if (modifico)
         {
-            Nuevo();
+            foreach (var detalle in Cotizacion.CotizacionesDetalle)
+            {
+                var articulo = await ArticulosService.BuscarPorId(detalle.ArticuloId);
+
+                if (articulo != null)
+                {
+                    articulo.Existencia -= detalle.Cantidad;
+                    if (articulo.Existencia < 0)
+                    {
+                        articulo.Existencia = 0;
+                    }
+
+                    await ArticulosService.Actualizar(articulo);
+                }
+            }
             navigationManager.NavigateTo("/Cotizaciones/Index");
         }
+    }
+
+    public void RemoverDetalle(CotizacionesDetalle detalle)
+    {
+        Cotizacion.CotizacionesDetalle.Remove(detalle);
+        DetalleSeleccionado = detalle;
     }
 
 }
